@@ -60,12 +60,20 @@ public class AssignmentController : ControllerBase
         }
     }
 
-    [HttpPut]
-    public async Task<ActionResult<AssignmentResponse>> Update([FromBody] ChangeAssigmentInput input)
+    [HttpPut("{id}")]
+    public async Task<ActionResult<AssignmentResponse>> Update(int id, [FromBody] AssignmentInput input)
     {
         try
         {
-            await _assignmentService.UpdateAsync(input);
+            var changeInput = new ChangeAssigmentInput(
+                AssigmentId: id,
+                UserId: 0, // будет получен из токена в сервисе
+                Title: input.Title,
+                Description: input.Description,
+                Priority: input.Priority,
+                Deadline: input.Deadline
+            );
+            await _assignmentService.UpdateAsync(changeInput);
             return Ok();
         }
         catch (Exception ex)

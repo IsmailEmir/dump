@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import './MainLayout.css'
 import { useTranslation } from '../i18n/LanguageContext'
-import { getAssignmentById, getAssignments, getCurrentUser, createTask } from '../services/api'
+import { getAssignmentById, getAssignments, getCurrentUser, createTask, updateTask, deleteTask } from '../services/api'
 
 import AddTaskModal from '../features/Tasks/components/AddTaskModal'
 import DeleteTaskModal from '../features/Tasks/components/DeleteTaskModal'
@@ -121,10 +121,26 @@ function MainLayout({ onLogout }) {
         setIsEditOpen(true)
     }
 
-    const handleUpdateTask = (updatedTask) => {
-        setTasks(tasks.map(t => t.id === updatedTask.id ? updatedTask : t))
-        setIsEditOpen(false)
-        setCurrentTask(null)
+    const handleUpdateTask = async (updatedTask) => {
+        try {
+            await updateTask(updatedTask.id, {
+                title: updatedTask.title,
+                description: updatedTask.description,
+                priority: updatedTask.priority,
+                deadline: updatedTask.deadline
+            })
+            
+            // Обновляем список задач после успешного обновления
+            const data = await getAssignments()
+            const refreshed = Array.isArray(data) ? data.map(normalizeTask) : []
+            const userTasks = currentUser ? refreshed.filter(task => task.assigneeId === currentUser || task.userId === currentUser) : refreshed
+            setTasks(userTasks)
+            setIsEditOpen(false)
+            setCurrentTask(null)
+        } catch (error) {
+            console.error('Ошибка при обновлении задачи:', error)
+            setTasksError('Не удалось обновить задачу. Проверьте соединение с сервером.')
+        }
     }
 
     const openDeleteModal = (task) => {
@@ -132,10 +148,21 @@ function MainLayout({ onLogout }) {
         setIsDeleteOpen(true)
     }
 
-    const handleDeleteTask = (taskId) => {
-        setTasks(tasks.filter(t => t.id !== taskId))
-        setIsDeleteOpen(false)
-        setCurrentTask(null)
+    const handleDeleteTask = async (taskId) => {
+        try {
+            await deleteTask(taskId)
+            
+            // Обновляем список задач после успешного удаления
+            const data = await getAssignments()
+            const refreshed = Array.isArray(data) ? data.map(normalizeTask) : []
+            const userTasks = currentUser ? refreshed.filter(task => task.assigneeId === currentUser || task.userId === currentUser) : refreshed
+            setTasks(userTasks)
+            setIsDeleteOpen(false)
+            setCurrentTask(null)
+        } catch (error) {
+            console.error('Ошибка при удалении задачи:', error)
+            setTasksError('Не удалось удалить задачу. Проверьте соединение с сервером.')
+        }
     }
 
     const openDescModal = (task) => {

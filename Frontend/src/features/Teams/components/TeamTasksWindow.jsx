@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import '../styles.css'
 import '../../../styles/common-ui.css'
 import '../../Tasks/styles.css'
+import { updateTask, deleteTask, getAssignments } from '../../../services/api'
 
 import AddTaskModal from '../../Tasks/components/AddTaskModal'
 import EditTaskModal from '../../Tasks/components/EditTaskModal'
@@ -59,10 +60,25 @@ export default function TeamTasksWindow({ teamData, onClose }) {
         setIsEditOpen(true)
     }
 
-    const handleUpdateTask = (updatedTask) => {
-        setTasks(tasks.map(t => t.id === updatedTask.id ? updatedTask : t))
-        setIsEditOpen(false)
-        setCurrentTask(null)
+    const handleUpdateTask = async (updatedTask) => {
+        try {
+            await updateTask(updatedTask.id, {
+                title: updatedTask.title,
+                description: updatedTask.description,
+                priority: updatedTask.priority,
+                deadline: updatedTask.deadline
+            })
+            
+            // Обновляем список задач после успешного обновления
+            const data = await getAssignments()
+            const refreshed = Array.isArray(data) ? data.map(normalizeTask) : []
+            setTasks(refreshed)
+            setIsEditOpen(false)
+            setCurrentTask(null)
+        } catch (error) {
+            console.error('Ошибка при обновлении задачи:', error)
+            alert('Не удалось обновить задачу. Проверьте соединение с сервером.')
+        }
     }
 
     const openDeleteModal = (task) => {
@@ -70,10 +86,20 @@ export default function TeamTasksWindow({ teamData, onClose }) {
         setIsDeleteOpen(true)
     }
 
-    const handleDeleteTask = (taskId) => {
-        setTasks(tasks.filter(t => t.id !== taskId))
-        setIsDeleteOpen(false)
-        setCurrentTask(null)
+    const handleDeleteTask = async (taskId) => {
+        try {
+            await deleteTask(taskId)
+            
+            // Обновляем список задач после успешного удаления
+            const data = await getAssignments()
+            const refreshed = Array.isArray(data) ? data.map(normalizeTask) : []
+            setTasks(refreshed)
+            setIsDeleteOpen(false)
+            setCurrentTask(null)
+        } catch (error) {
+            console.error('Ошибка при удалении задачи:', error)
+            alert('Не удалось удалить задачу. Проверьте соединение с сервером.')
+        }
     }
 
     // ДОБАВЛЕНО: функция для открытия окна деталей

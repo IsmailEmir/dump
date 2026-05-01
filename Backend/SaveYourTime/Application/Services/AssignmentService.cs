@@ -87,9 +87,16 @@ public class AssignmentService : IAssignmentService
 
     public async Task UpdateAsync(ChangeAssigmentInput input)
     {
+        var currentUserId = _currentUserService.GetCurrentUserId()
+                            ?? throw new UnauthorizedAccessException("Пользователь не аутентифицирован");
+
         var assignment = await _assignmentRepository.GetByIdAsync(input.AssigmentId);
         if (assignment == null)
             throw new Exception("Задача не найдена");
+
+        // Проверка: пользователь должен быть владельцем задачи
+        if (assignment.UserId != currentUserId)
+            throw new UnauthorizedAccessException("У вас нет прав на редактирование этой задачи");
 
         assignment.Title = input.Title;
         assignment.Description = input.Description;
@@ -101,6 +108,17 @@ public class AssignmentService : IAssignmentService
 
     public async Task DeleteAsync(int id)
     {
+        var currentUserId = _currentUserService.GetCurrentUserId()
+                            ?? throw new UnauthorizedAccessException("Пользователь не аутентифицирован");
+
+        var assignment = await _assignmentRepository.GetByIdAsync(id);
+        if (assignment == null)
+            throw new Exception("Задача не найдена");
+
+        // Проверка: пользователь должен быть владельцем задачи
+        if (assignment.UserId != currentUserId)
+            throw new UnauthorizedAccessException("У вас нет прав на удаление этой задачи");
+
         await _assignmentRepository.DeleteAsync(id);
     }
 
