@@ -1,0 +1,415 @@
+* {
+    transition: background-color 0.4s ease, border-color 0.4s ease, color 0.4s ease;
+}
+
+html[data-theme="light"],
+body[data-theme="light"] {
+    background: linear-gradient(135deg, #f1f5f9, #cbd5e1) !important;
+    color: #1e293b;
+}
+
+body[data-theme="light"] .glass-panel {
+    background: rgba(240, 242, 245, 0.75);
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    color: #1e293b;
+}
+
+body[data-theme="light"] .modal-overlay {
+    background: rgba(0, 0, 0, 0.3);
+}
+
+body[data-theme="light"] .modal-content {
+    background: rgba(240, 242, 245, 0.85);
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.14);
+    color: #1e293b;
+}
+
+body[data-theme="light"] .modal-content h2,
+body[data-theme="light"] .modal-content h3 {
+    color: #0f172a;
+}
+
+body[data-theme="light"] .modal-content input,
+body[data-theme="light"] .modal-content textarea,
+body[data-theme="light"] .settings-select,
+body[data-theme="light"] .add-member-input,
+body[data-theme="light"] .create-team-input {
+    background: rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    color: #1e293b;
+}
+
+body[data-theme="light"] .modal-content input:focus,
+body[data-theme="light"] .modal-content textarea:focus,
+body[data-theme="light"] .settings-select:focus,
+body[data-theme="light"] .add-member-input:focus,
+body[data-theme="light"] .create-team-input:focus {
+    background: rgba(0, 0, 0, 0.07);
+    border-color: rgba(0, 0, 0, 0.2);
+}
+
+body[data-theme="light"] .modal-content input::placeholder,
+body[data-theme="light"] .modal-content textarea::placeholder,
+body[data-theme="light"] .add-member-input::placeholder,
+body[data-theme="light"] .create-team-input::placeholder {
+    color: rgba(0, 0, 0, 0.4) !important;
+}
+
+body[data-theme="light"] .info-card {
+    background: rgba(0, 0, 0, 0.04);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+body[data-theme="light"] .info-card:hover {
+    background: rgba(0, 0, 0, 0.07);
+    border-color: rgba(0, 0, 0, 0.15);
+}
+
+body[data-theme="light"] .settings-section {
+    background: rgba(0, 0, 0, 0.03);
+    border: 1px solid rgba(0, 0, 0, 0.07);
+}
+
+body[data-theme="light"] .setting-item {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+body[data-theme="light"] .setting-label {
+    color: #0f172a;
+}
+
+body[data-theme="light"] .setting-desc {
+    color: rgba(0, 0, 0, 0.5);
+}
+
+body[data-theme="light"] .avatar,
+body[data-theme="light"] .team-avatar-circle {
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.08), rgba(0, 0, 0, 0.05));
+    border: 2px solid rgba(0, 0, 0, 0.15);
+}
+
+body[data-theme="light"] .avatar:hover,
+body[data-theme="light"] .team-avatar-circle:hover {
+    border-color: rgba(0, 0, 0, 0.25);
+}
+
+body[data-theme="light"] .leftPanel .icon {
+    color: #1e293b;
+    font-weight: 500;
+}
+
+body[data-theme="light"] .leftPanel .icon:hover {
+    background: rgba(0, 0, 0, 0.08);
+}
+
+body[data-theme="light"] .leftPanel .icon .img-default {
+    filter: brightness(0.4);
+    opacity: 0.75;
+}
+
+body[data-theme="light"] .top-panel #rectangle-top-panel h1 {
+    color: #7f848f !important;
+}
+
+body[data-theme="light"] .task-card {
+    background: rgba(255, 255, 255, 0.75);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    color: #1e293b;
+}
+
+body[data-theme="light"] .task-card:hover {
+    background: rgba(255, 255, 255, 0.85);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+}
+
+body[data-theme="light"] .btn-save,
+body[data-theme="light"] .btn-secondary,
+body[data-theme="light"] .team-nav-btn,
+body[data-theme="light"] .btn-create-team-small {
+    border-color: rgba(0, 0, 0, 0.25);
+    color: #0f172a !important;
+    font-weight: 600;
+}
+
+body[data-theme="light"] .btn-save .btn-bg-slide,
+body[data-theme="light"] .btn-secondary .btn-bg-slide,
+body[data-theme="light"] .team-nav-btn .nav-bg-slide,
+body[data-theme="light"] .btn-create-team-small .btn-bg-slide {
+    opacity: 0.1;
+    background: #000;
+}
+
+body[data-theme="light"] .btn-cancel {
+    background: rgba(0, 0, 0, 0.05);
+    border: 2px solid rgba(0, 0, 0, 0.15);
+    color: #334155 !important;
+    font-weight: 500;
+}
+
+body[data-theme="light"] .btn-cancel:hover {
+    background: rgba(0, 0, 0, 0.08);
+}
+
+body[data-theme="light"] .toggle-slider {
+    background: rgba(0, 0, 0, 0.12);
+    border: 1px solid rgba(0, 0, 0, 0.15);
+}
+
+body[data-theme="light"] .toggle-slider:before {
+    background: white;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+body[data-theme="light"] input:checked + .toggle-slider {
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+}
+
+body[data-theme="light"] .user-id {
+    color: rgba(0, 0, 0, 0.6);
+}
+
+body[data-theme="light"] .settings-select option {
+    background: white;
+    color: #1e293b;
+}
+
+body[data-theme="light"] ::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.2);
+}
+
+body[data-theme="light"] ::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 0, 0, 0.3);
+}
+
+body[data-theme="light"] .priority-text-btn {
+    border-color: rgba(0, 0, 0, 0.2);
+    color: #1e293b;
+}
+
+body[data-theme="light"] .priority-text-btn:hover:not(.active) {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+body[data-theme="light"] .details-btn,
+body[data-theme="light"] .team-action-btn {
+    background: rgba(0, 0, 0, 0.06);
+    border-color: rgba(0, 0, 0, 0.15);
+    color: #0f172a !important;
+    font-weight: 500;
+}
+
+body[data-theme="light"] .icon-btn-micro img {
+    filter: brightness(0);
+    opacity: 0.6;
+}
+
+body[data-theme="light"] .common-close-btn img {
+    filter: brightness(0) invert(0);
+    opacity: 0.7;
+}
+
+body[data-theme="light"] .date-label,
+body[data-theme="light"] .task-date-label,
+body[data-theme="light"] .section-label-text,
+body[data-theme="light"] .detail-label,
+body[data-theme="light"] .info-block-label {
+    color: rgba(0, 0, 0, 0.6);
+}
+
+body[data-theme="light"] .date-value,
+body[data-theme="light"] .task-description-content,
+body[data-theme="light"] .info-block-value {
+    color: #1e293b;
+}
+
+body[data-theme="light"] .btn-simple-zoom {
+    background: rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    color: #0f172a !important;
+}
+
+body[data-theme="light"] .btn-simple-zoom:hover {
+    background: rgba(0, 0, 0, 0.08);
+}
+
+body[data-theme="light"] .btn-text-inner {
+    color: #1e293b !important;
+}
+
+body[data-theme="light"] .desc-modal-content {
+    background: rgba(240, 242, 245, 0.85);
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    color: #1e293b;
+}
+
+body[data-theme="light"] .desc-full-text {
+    background: rgba(0, 0, 0, 0.04);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    color: #1e293b;
+}
+
+body[data-theme="light"] .field-label {
+    color: #0f172a;
+    opacity: 0.9;
+}
+
+body[data-theme="light"] .task-footer-dates {
+    border-top: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+body[data-theme="light"] .create-team-modal-content {
+    background: rgba(240, 242, 245, 0.85);
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    color: #1e293b;
+}
+
+body[data-theme="light"] .avatar-upload-icon {
+    filter: brightness(0) invert(0) !important;
+    opacity: 0.7 !important;
+}
+
+body[data-theme="light"] .avatar-hint {
+    color: rgba(0, 0, 0, 0.6);
+}
+
+body[data-theme="light"] .btn-icon {
+    filter: brightness(0) invert(0);
+    opacity: 0;
+}
+
+body[data-theme="light"] .btn-save:hover .btn-icon,
+body[data-theme="light"] .btn-cancel:hover .btn-icon,
+body[data-theme="light"] .btn-secondary:hover .btn-icon,
+body[data-theme="light"] .btn-create-team-small:hover .btn-icon {
+    opacity: 0.9;
+}
+
+body[data-theme="light"] .team-list-content {
+    background: rgba(240, 242, 245, 0.85);
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    color: #1e293b;
+}
+
+body[data-theme="light"] .team-item {
+    background: rgba(0, 0, 0, 0.04);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+body[data-theme="light"] .team-item:hover {
+    background: rgba(0, 0, 0, 0.07);
+}
+
+body[data-theme="light"] .empty-message {
+    color: rgba(0, 0, 0, 0.5);
+}
+
+body[data-theme="light"] .nav-icon {
+    filter: brightness(0) invert(0);
+    opacity: 0.8;
+}
+
+body[data-theme="light"] .task-icon-img {
+    filter: brightness(0) invert(0);
+    opacity: 0.8;
+}
+
+body[data-theme="light"] .kanban-column {
+    background: rgba(0, 0, 0, 0.04);
+    border-right: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+body[data-theme="light"] .column-header {
+    border-bottom: 2px solid rgba(0, 0, 0, 0.1);
+    color: #0f172a;
+}
+
+body[data-theme="light"] .team-tasks-content {
+    background: rgba(240, 242, 245, 0.85);
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    color: #1e293b;
+}
+
+body[data-theme="light"] .team-profile-content {
+    background: rgba(240, 242, 245, 0.85);
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    color: #1e293b;
+}
+
+body[data-theme="light"] .team-stats-placeholder {
+    background: rgba(0, 0, 0, 0.04);
+    color: rgba(0, 0, 0, 0.6);
+}
+
+body[data-theme="light"] .task-description-box {
+    background: rgba(0, 0, 0, 0.04);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    color: #1e293b;
+}
+
+body[data-theme="light"] .sidebar-info-block {
+    background: rgba(0, 0, 0, 0.04);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+body[data-theme="light"] .info-value {
+    color: #1e293b;
+}
+
+body[data-theme="light"] .profile-icon {
+    filter: brightness(0.4);
+    opacity: 0.75;
+}
+
+body[data-theme="light"] .info-label,
+body[data-theme="light"] .detail-section-label,
+body[data-theme="light"] .date-label-text {
+    color: rgba(0, 0, 0, 0.6) !important;
+}
+
+body[data-theme="light"] .password-input {
+    background: rgba(0, 0, 0, 0.06) !important;
+    border: 1px solid rgba(0, 0, 0, 0.1) !important;
+    color: #1e293b !important;
+}
+
+body[data-theme="light"] .password-input:focus {
+    background: rgba(0, 0, 0, 0.08) !important;
+    border-color: rgba(0, 0, 0, 0.2) !important;
+}
+
+body[data-theme="light"] .password-input::placeholder {
+    color: rgba(0, 0, 0, 0.4) !important;
+}
+
+body[data-theme="light"] .info-icon img {
+    filter: brightness(0.4) !important;
+    opacity: 0.75 !important;
+}
+
+body[data-theme="light"] .deadline-input {
+    background: rgba(0, 0, 0, 0.05) !important;
+    border: 1px solid rgba(0, 0, 0, 0.1) !important;
+    color: #1e293b !important;
+}
+
+body[data-theme="light"] .deadline-input:focus {
+    background: rgba(0, 0, 0, 0.07) !important;
+    border-color: rgba(0, 0, 0, 0.2) !important;
+}
+
+body[data-theme="light"] #add-task-icon .img-default {
+    filter: brightness(0.4) !important;
+    opacity: 0.75 !important;
+}
+
+body[data-theme="light"] #add-task-icon:hover .img-default {
+    opacity: 1 !important;
+}
+
+body[data-theme="light"] #add-task-icon .icon-svg {
+    stroke: #334155 !important;
+}

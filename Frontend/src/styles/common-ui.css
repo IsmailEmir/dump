@@ -1,0 +1,282 @@
+.common-close-btn {
+    position: absolute;
+    top: -1px;
+    right: -1px;
+    width: 40px;
+    height: 40px;
+    background: transparent !important; 
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important; 
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.common-close-btn img {
+    width: 18px;
+    height: 18px;
+    filter: brightness(0) invert(1);
+    opacity: 0.8;
+    transition: opacity 0.3s;
+    display: block; 
+}
+
+.common-close-btn:hover {
+    transform: scale(1.1) !important; 
+    background: transparent !important;
+    box-shadow: none !important;
+    outline: none !important;
+}
+
+.common-close-btn:hover img {
+    opacity: 1;
+}
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    backdrop-filter: blur(5px);
+}
+
+.modal-content {
+    background-color: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    padding: 25px;
+    border-radius: 20px;
+    width: 450px;
+    max-width: 90%;
+    display: flex;
+    flex-direction: column;
+    color: white;
+    position: relative;
+}
+.modal-content header {
+    margin-bottom: 24px;
+    font-family: 'Nunito', monospace;
+    text-align: center;
+    font-weight: 400;
+    width: 100%;
+}
+
+.modal-header header {
+    margin: 0;
+    font-family: 'Nunito', monospace;
+    text-align: center;
+    font-size: 20px !important;
+    flex-grow: 1;
+}
+
+.team-list-content header {
+    margin: 0;
+    text-align: center;
+}
+
+.create-team-modal-content header {
+    margin: 0;
+    font-size: 24px;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.tasks-header header {
+    margin: 0;
+    font-size: 28px;
+    font-weight: 400;
+    font-family: 'Nunito', monospace;
+}
+
+.add-member-modal-content header {
+    margin: 0;
+}
+
+.custom-scrollbar {
+    overflow-y: auto !important;
+    scrollbar-width: thin !important;
+    scrollbar-color: rgba(255, 255, 255, 0.2) transparent !important;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+    width: 6px !important;
+    height: 6px !important;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent !important;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 255, 255, 0.2) !important;
+    border-radius: 3px !important;
+}
+
+.resizable-textarea {
+    min-height: 100px !important;
+    max-height: 210px;
+    resize: vertical !important;
+    overflow-y: auto;
+    display: block;
+    position: relative;
+}
+
+.resizable-textarea::-webkit-resizer {
+    display: none;
+}
+
+.resizable-textarea::after {
+    content: '';
+    position: absolute;
+    bottom: 2px;
+    right: 2px;
+    width: 15px;
+    height: 15px;
+    background: linear-gradient(135deg, transparent 50%, rgba(255, 255, 255, 0.5) 50%);
+    cursor: nwse-resize;
+    pointer-events: none;
+    border-bottom-right-radius: 8px;
+}
+
+.btn-save, .btn-cancel, .btn-add-member, .btn-team-tasks {
+    background-color: transparent !important;
+    position: relative;
+    overflow: hidden;
+    height: 41px;
+    padding: 0 16px;
+    border-radius: 13px;
+    z-index: 3;
+    background-color: transparent;
+    border: rgba(255, 255, 255, 0.2) solid 2px;
+    color: white;
+    font-weight: 600;
+    font-family: 'Nunito', monospace;
+    font-size: 14px !important;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: border-color 0.3s ease;
+    
+    background: transparent;
+    color: white;
+}
+
+.btn-save {
+    border-color: #098765;
+}
+
+.btn-save:hover {
+    border-color: #054a37;
+}
+
+.btn-cancel {
+    border-color: #B44C43;
+}
+
+.btn-cancel:hover {
+    border-color: #b44c4374;
+}
+
+.btn-add-member {
+    border-color: #098765;
+}
+
+.btn-add-member:hover {
+    border-color: #054a37;
+}
+
+
+.btn-team-tasks {
+    border-color: #4a90e2;
+}
+
+.btn-team-tasks:hover {
+    border-color: #345382;
+}
+
+
+
+.btn-text {
+    position: relative;
+    z-index: 2;
+    transition: transform 0.35s ease-in, opacity 0.35s ease-in;
+    opacity: 1;
+}
+
+.btn-icon {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%) scale(0.5);
+    width: 20px;
+    height: 20px;
+    z-index: 101;
+    opacity: 0;
+    transition: all 0.35s ease-out;
+    filter: brightness(0) invert(1);
+}
+
+.btn-bg-slide {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 100;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.35s ease-out;
+}
+
+.btn-save .btn-bg-slide {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+.btn-cancel .btn-bg-slide {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+.btn-team-tasks .btn-bg-slide {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+.btn-add-member .btn-bg-slide {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+.btn-save:hover .btn-bg-slide,
+.btn-cancel:hover .btn-bg-slide,
+.btn-team-tasks:hover .btn-bg-slide,
+.btn-add-member:hover .btn-bg-slide{
+    transform: scaleX(1);
+}
+
+.btn-save:hover .btn-text,
+.btn-cancel:hover .btn-text,
+.btn-team-tasks:hover .btn-text,
+.btn-add-member:hover .btn-text{
+    transform: translateX(-150%);
+    opacity: 0;
+}
+
+.btn-save:hover .btn-icon,
+.btn-cancel:hover .btn-icon,
+.btn-team-tasks:hover .btn-icon,
+.btn-add-member:hover .btn-icon {
+    opacity: 1 !important;
+    transform: translate(-50%, -50%) scale(1) !important;
+    z-index: 102; 
+}
