@@ -1,41 +1,67 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import '../styles.css'
 import '../../../styles/common-ui.css'
 import { useTranslation } from '../../../i18n/LanguageContext'
+import DateTimePicker from './DateTimePicker'
 
 export default function EditTaskModal({ task, isOpen, onClose, onSave }) {
     const { t } = useTranslation();
     const [title, setTitle] = useState('')
     const [description, setDescription] = useState('')
     const [priority, setPriority] = useState(null)
-    const [deadline, setDeadline] = useState('')
+
+    // Используем тот же UX/календарь, что и в AddTaskModal
+    const [deadlineDate, setDeadlineDate] = useState(null)
+    const [deadlineTime, setDeadlineTime] = useState('12:00')
+    const [inputValue, setInputValue] = useState('')
+    const [isCalendarOpen, setIsCalendarOpen] = useState(false)
+    const calendarRef = useRef(null)
 
     const [errorTitle, setErrorTitle] = useState('')
     const [errorPriority, setErrorPriority] = useState('')
     const [errorDeadline, setErrorDeadline] = useState('')
 
-    const getLocalDateTimeValue = (dateString) => {
-        if (!dateString) return ''
-        const date = new Date(dateString)
-        if (isNaN(date.getTime())) return ''
-        const pad = (n) => n < 10 ? '0' + n : n
-        const year = date.getFullYear()
-        const month = pad(date.getMonth() + 1)
-        const day = pad(date.getDate())
-        const hours = pad(date.getHours())
-        const minutes = pad(date.getMinutes())
-        return `${year}-${month}-${day}T${hours}:${minutes}`
-    }
+    useEffect(() => {
+        if (!isOpen) return
+
+        const handleClickOutside = (event) => {
+            if (calendarRef.current && !calendarRef.current.contains(event.target)) {
+                setIsCalendarOpen(false)
+            }
+        }
+
+        document.addEventListener('mousedown', handleClickOutside)
+        return () => document.removeEventListener('mousedown', handleClickOutside)
+    }, [isOpen])
+
+    useEffect(() => {
+        if (deadlineDate) {
+            const day = String(deadlineDate.getDate()).padStart(2, '0')
+            const month = String(deadlineDate.getMonth() + 1).padStart(2, '0')
+            const year = deadlineDate.getFullYear()
+            setInputValue(`${day}.${month}.${year} ${deadlineTime}`)
+        } else {
+            setInputValue('')
+        }
+    }, [deadlineDate, deadlineTime, isOpen])
 
     useEffect(() => {
         if (task && isOpen) {
             setTitle(task.title)
             setDescription(task.description || '')
             setPriority(task.priority || null)
-            const formattedDate = getLocalDateTimeValue(task.deadline)
-            setTimeout(() => {
-                setDeadline(formattedDate)
-            }, 50)
+
+            const d = task.deadline ? new Date(task.deadline) : null
+            if (d && !isNaN(d.getTime())) {
+                setDeadlineDate(new Date(d.getFullYear(), d.getMonth(), d.getDate()))
+                const hh = String(d.getHours()).padStart(2, '0')
+                const mm = String(d.getMinutes()).padStart(2, '0')
+                setDeadlineTime(`${hh}:${mm}`)
+            } else {
+                setDeadlineDate(null)
+                setDeadlineTime('12:00')
+            }
+
             clearErrors()
         }
     }, [task, isOpen])
@@ -46,6 +72,47 @@ export default function EditTaskModal({ task, isOpen, onClose, onSave }) {
         setErrorTitle('')
         setErrorPriority('')
         setErrorDeadline('')
+    }
+
+    const formatDeadlineInput = (value) => {
+        let cleaned = value.replace(/[^\d.\s:]/g, '')
+        if (cleaned.length > 16) cleaned = cleaned.slice(0, 16)
+
+        let formatted = ''
+        for (let i = 0; i < cleaned.length; i++) {
+            const char = cleaned[i]
+            formatted += char
+
+            if (i === 1 && /\d/.test(cleaned[i + 1])) formatted += '.'
+            else if (i === 4 && /\d/.test(cleaned[i + 1])) formatted += '.'
+            else if (i === 9 && /\d/.test(cleaned[i + 1])) formatted += ' '
+            else if (i === 12 && /\d/.test(cleaned[i + 1])) formatted += ':'
+        }
+
+        return formatted
+    }
+
+    const handleDeadlineChange = (e) => {
+        const rawValue = e.target.value
+        const formattedValue = formatDeadlineInput(rawValue)
+        setInputValue(formattedValue)
+
+        const regex = /^(\d{2})\.(\d{2})\.(\d{4})\s+(\d{2}):(\d{2})$/
+        const match = formattedValue.match(regex)
+
+        if (match) {
+            const [, day, month, year, hours, minutes] = match
+            const newDate = new Date(year, month - 1, day)
+            if (!isNaN(newDate.getTime()) && newDate.getMonth() === parseInt(month) - 1) {
+                setDeadlineDate(newDate)
+                setDeadlineTime(`${hours}:${minutes}`)
+                if (errorDeadline) setErrorDeadline('')
+            } else {
+                setDeadlineDate(null)
+            }
+        } else {
+            if (formattedValue === '') setDeadlineDate(null)
+        }
     }
 
     const handleSubmit = (e) => {
@@ -64,20 +131,25 @@ export default function EditTaskModal({ task, isOpen, onClose, onSave }) {
             isValid = false
         }
 
-        if (!deadline) {
+        if (!deadlineDate) {
             setErrorDeadline('Укажите дедлайн')
             isValid = false
         }
 
         if (isValid) {
+            const finalDeadline = new Date(deadlineDate)
+            if (deadlineTime) {
+                const [hours, minutes] = deadlineTime.split(':').map(Number)
+                finalDeadline.setHours(hours, minutes, 0, 0)
+            }
+            const deadlineISO = finalDeadline.toISOString()
+
             onSave({
                 ...task,
                 title,
                 description,
                 priority,
-                deadline,
-                createdAt: task.createdAt || new Date().toISOString(),
-                updatedAt: new Date().toISOString()
+                deadline: deadlineISO,
             })
             onClose()
         }
@@ -161,15 +233,30 @@ export default function EditTaskModal({ task, isOpen, onClose, onSave }) {
 
                     <div className="deadline-selector field-wrapper">
                         <label className="field-label">{t('deadline')}:</label>
-                        <input
-                            type="datetime-local"
-                            value={deadline}
-                            onChange={(e) => {
-                                setDeadline(e.target.value)
-                                if (errorDeadline) setErrorDeadline('')
-                            }}
-                            className={`deadline-input ${errorDeadline ? 'input-error' : ''}`}
-                        />
+                        <div ref={calendarRef}>
+                            <input
+                                type="text"
+                                value={inputValue}
+                                onChange={handleDeadlineChange}
+                                onClick={() => setIsCalendarOpen(!isCalendarOpen)}
+                                className={`deadline-input-trigger ${errorDeadline ? 'input-error' : ''}`}
+                                placeholder={t('datePlaceholder')}
+                            />
+
+                            {isCalendarOpen && (
+                                <div className="custom-calendar-popover">
+                                    <DateTimePicker
+                                        selectedDate={deadlineDate}
+                                        onDateChange={(date) => {
+                                            setDeadlineDate(date)
+                                            if (errorDeadline) setErrorDeadline('')
+                                        }}
+                                        selectedTime={deadlineTime}
+                                        onTimeChange={setDeadlineTime}
+                                    />
+                                </div>
+                            )}
+                        </div>
                         {errorDeadline && <span className="error-message">{errorDeadline}</span>}
                     </div>
 

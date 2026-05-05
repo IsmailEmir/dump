@@ -48,6 +48,9 @@ namespace WebApplication1.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<DateTime?>("Deadline")
                         .HasColumnType("timestamp with time zone");
 
@@ -58,9 +61,6 @@ namespace WebApplication1.Migrations
                         .HasColumnType("integer");
 
                     b.Property<int>("StatusId")
-                        .HasColumnType("integer");
-
-                    b.Property<int?>("TeamId")
                         .HasColumnType("integer");
 
                     b.Property<string>("Title")
@@ -75,8 +75,6 @@ namespace WebApplication1.Migrations
                     b.HasIndex("PriorityId");
 
                     b.HasIndex("StatusId");
-
-                    b.HasIndex("TeamId");
 
                     b.HasIndex("UserId");
 
@@ -193,6 +191,9 @@ namespace WebApplication1.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("AvatarUrl")
+                        .HasColumnType("text");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
@@ -211,6 +212,53 @@ namespace WebApplication1.Migrations
                     b.HasIndex("LeaderId");
 
                     b.ToTable("Teams");
+                });
+
+            modelBuilder.Entity("WebApplication1.Domain.Models.TeamAssignment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime?>("Deadline")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Priority")
+                        .HasColumnType("text");
+
+                    b.Property<int>("StatusId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("TeamId")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("UserId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("StatusId");
+
+                    b.HasIndex("TeamId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("TeamAssignments");
                 });
 
             modelBuilder.Entity("WebApplication1.Domain.Models.User", b =>
@@ -281,10 +329,6 @@ namespace WebApplication1.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("WebApplication1.Domain.Models.Team", null)
-                        .WithMany("Assignments")
-                        .HasForeignKey("TeamId");
-
                     b.HasOne("WebApplication1.Domain.Models.User", "User")
                         .WithMany("Assignments")
                         .HasForeignKey("UserId")
@@ -309,6 +353,32 @@ namespace WebApplication1.Migrations
                     b.Navigation("Leader");
                 });
 
+            modelBuilder.Entity("WebApplication1.Domain.Models.TeamAssignment", b =>
+                {
+                    b.HasOne("WebApplication1.Domain.Models.AssignmentStatus", "Status")
+                        .WithMany("TeamAssignments")
+                        .HasForeignKey("StatusId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("WebApplication1.Domain.Models.Team", "Team")
+                        .WithMany("TeamAssignments")
+                        .HasForeignKey("TeamId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("WebApplication1.Domain.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("Status");
+
+                    b.Navigation("Team");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("WebApplication1.Domain.Models.User", b =>
                 {
                     b.HasOne("WebApplication1.Domain.Models.Role", "Role")
@@ -327,6 +397,8 @@ namespace WebApplication1.Migrations
             modelBuilder.Entity("WebApplication1.Domain.Models.AssignmentStatus", b =>
                 {
                     b.Navigation("Assignments");
+
+                    b.Navigation("TeamAssignments");
                 });
 
             modelBuilder.Entity("WebApplication1.Domain.Models.Role", b =>
@@ -336,7 +408,7 @@ namespace WebApplication1.Migrations
 
             modelBuilder.Entity("WebApplication1.Domain.Models.Team", b =>
                 {
-                    b.Navigation("Assignments");
+                    b.Navigation("TeamAssignments");
                 });
 
             modelBuilder.Entity("WebApplication1.Domain.Models.User", b =>

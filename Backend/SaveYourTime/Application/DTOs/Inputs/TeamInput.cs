@@ -4,5 +4,6 @@ public record TeamInput(
     int LeaderId, // Это id пользователя, т.к он создает задачу
     int teamId,
     string Name,
-    string? Description = null
+    string? Description = null,
+    string? AvatarUrl = null
 );

@@ -1,11 +1,11 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.EntityFrameworkCore;
 using WebApplication1.Application.Services;
 using WebApplication1.Domain.Interfaces.Repositories;
 using WebApplication1.Domain.Interfaces.Services;
 using WebApplication1.Infrastructure.Contexts;
 using WebApplication1.Infrastructure.Middlewares;
-using WebApplication1.Infrastructure.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,8 +29,12 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 
-// Cookie
+// Cookie — сохраняем ключи Data Protection, чтобы куки жили после перезапуска
+builder.Services.AddDataProtection()
+    .PersistKeysToFileSystem(new DirectoryInfo(Path.Combine(builder.Environment.ContentRootPath, "Keys")));
+
 builder.Services.ConfigureAuth();
+
 // Repo
 builder.Services.ConfigureRepositories(builder.Configuration);
 
@@ -57,6 +61,8 @@ app.UseExceptionHandling();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.UseStaticFiles();
 
 app.MapControllers();
 

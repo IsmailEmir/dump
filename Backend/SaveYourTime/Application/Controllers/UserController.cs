@@ -17,21 +17,21 @@ public class UserController : ControllerBase
     {
         _userService = userService;
     }
-    
+
     [HttpGet]
     public async Task<ActionResult<IEnumerable<UserResponse>>> GetAll()
     {
         var users = await _userService.GetAllUsersAsync();
         return Ok(users);
     }
-    
+
     [HttpGet("{id}")]
-    public async Task<ActionResult<UserResponse>> GetById(int userId)
+    public async Task<ActionResult<UserResponse>> GetById(int id)
     {
-        var user = await _userService.GetByIdAsync(userId);
+        var user = await _userService.GetByIdAsync(id);
         if (user == null)
-            return NotFound($"Пользователь с ID {userId} не найден");
-        
+            return NotFound($"Пользователь с ID {id} не найден");
+
         return Ok(user);
     }
 
@@ -43,7 +43,7 @@ public class UserController : ControllerBase
         var users = await _userService.GetByFilterAsync(username, roleId);
         return Ok(users);
     }
-    
+
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] UserInput input)
     {
@@ -78,7 +78,7 @@ public class UserController : ControllerBase
         await _userService.DeleteAsync(id);
         return NoContent();
     }
-    
+
     [HttpPatch("{id}/role")]
     public async Task<ActionResult<UserResponse>> ChangeUserRole(int userId, [FromBody] int roleId)
     {

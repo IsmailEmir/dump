@@ -1,8 +1,8 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import '../styles.css'
 import '../../../styles/common-ui.css'
 import '../../Tasks/styles.css'
-import { updateTask, deleteTask, getAssignments } from '../../../services/api'
+import { getTeamTasks, createTeamTask, updateTeamTask, deleteTeamTask, updateTeamTaskStatus } from '../../../services/api'
 
 import AddTaskModal from '../../Tasks/components/AddTaskModal'
 import EditTaskModal from '../../Tasks/components/EditTaskModal'
@@ -22,36 +22,63 @@ export default function TeamTasksWindow({ teamData, onClose }) {
     const [isWarningOpen, setIsWarningOpen] = useState(false)
     const [pendingMove, setPendingMove] = useState(null)
     const [activeCategory, setActiveCategory] = useState('todo')
-    
-    // ДОБАВЛЕНО: состояния для просмотра деталей
+    const [isLoading, setIsLoading] = useState(true)
     const [viewTask, setViewTask] = useState(null)
     const [isViewOpen, setIsViewOpen] = useState(false)
 
-    if (!teamData) return null
+    useEffect(() => {
+        if (teamData && teamData.id) {
+            loadTasks()
+        }
+    }, [teamData])
+
+    const loadTasks = async () => {
+        try {
+            setIsLoading(true)
+            const teamTasks = await getTeamTasks(teamData.id)
+            const normalizedTasks = teamTasks.map(normalizeTask)
+            setTasks(normalizedTasks)
+        } catch (error) {
+            console.error('Ошибка при загрузке задач команды:', error)
+            setTasks([])
+        } finally {
+            setIsLoading(false)
+        }
+    }
 
     const normalizeTask = (raw) => {
         if (!raw || typeof raw !== 'object') return raw
+
+        // Преобразуем statusId в строковый статус
+        let statusStr = raw.status ?? raw.Status ?? raw.state ?? raw.State
+        const statusId = raw.statusId ?? raw.StatusId
+
+        if (!statusStr && statusId) {
+            if (statusId === 1) statusStr = 'todo'
+            else if (statusId === 2) statusStr = 'in-progress'
+            else if (statusId === 3) statusStr = 'done'
+            else statusStr = 'todo'
+        }
+
         return {
             ...raw,
             id: raw.id ?? raw.Id ?? raw.assignmentId ?? raw.AssignmentId,
-            title: raw.title ?? raw.Title ?? '',
+            title: raw.title ?? raw.Title ?? raw.name ?? raw.Name ?? '',
             description: raw.description ?? raw.Description ?? '',
             priority: raw.priority ?? raw.Priority ?? null,
             deadline: raw.deadline ?? raw.Deadline ?? null,
             createdAt: raw.createdAt ?? raw.CreatedAt ?? raw.created ?? raw.Created ?? null,
-            status: raw.status ?? raw.Status ?? raw.statusId ?? raw.StatusId ?? raw.state ?? raw.State,
+            updatedAt: raw.updatedAt ?? raw.UpdatedAt ?? null,
+            status: statusStr,
+            teamId: raw.teamId ?? raw.TeamId,
+            userId: raw.userId ?? raw.UserId ?? null,
+            userName: raw.userName ?? raw.UserName ?? null
         }
     }
 
-    const handleAddTask = (newTask) => {
-        const normalized = normalizeTask(newTask)
-        const taskWithId = {
-            ...normalized,
-            id: normalized?.id ?? Date.now(),
-            status: normalized?.status ?? 'todo',
-            createdAt: normalized?.createdAt ?? new Date().toISOString(),
-        }
-        setTasks([...tasks, taskWithId])
+    const handleAddTask = (createdTask) => {
+        const normalized = normalizeTask(createdTask)
+        setTasks(prev => [...prev, normalized])
         setIsAddOpen(false)
     }
 
@@ -62,22 +89,13 @@ export default function TeamTasksWindow({ teamData, onClose }) {
 
     const handleUpdateTask = async (updatedTask) => {
         try {
-            await updateTask(updatedTask.id, {
-                title: updatedTask.title,
-                description: updatedTask.description,
-                priority: updatedTask.priority,
-                deadline: updatedTask.deadline
-            })
-            
-            // Обновляем список задач после успешного обновления
-            const data = await getAssignments()
-            const refreshed = Array.isArray(data) ? data.map(normalizeTask) : []
-            setTasks(refreshed)
+            await updateTeamTask(teamData.id, updatedTask.id, updatedTask)
+            setTasks(tasks.map(t => t.id === updatedTask.id ? updatedTask : t))
             setIsEditOpen(false)
             setCurrentTask(null)
         } catch (error) {
             console.error('Ошибка при обновлении задачи:', error)
-            alert('Не удалось обновить задачу. Проверьте соединение с сервером.')
+            alert('Не удалось обновить задачу')
         }
     }
 
@@ -88,30 +106,61 @@ export default function TeamTasksWindow({ teamData, onClose }) {
 
     const handleDeleteTask = async (taskId) => {
         try {
-            await deleteTask(taskId)
-            
-            // Обновляем список задач после успешного удаления
-            const data = await getAssignments()
-            const refreshed = Array.isArray(data) ? data.map(normalizeTask) : []
-            setTasks(refreshed)
+            await deleteTeamTask(teamData.id, taskId)
+            setTasks(tasks.filter(t => t.id !== taskId))
             setIsDeleteOpen(false)
             setCurrentTask(null)
         } catch (error) {
             console.error('Ошибка при удалении задачи:', error)
-            alert('Не удалось удалить задачу. Проверьте соединение с сервером.')
+            alert('Не удалось удалить задачу')
         }
     }
 
-    // ДОБАВЛЕНО: функция для открытия окна деталей
     const openViewDetails = (task) => {
         setViewTask(task)
         setIsViewOpen(true)
     }
 
-    const executeMove = (taskId, newStatus) => {
-        setTasks(tasks.map(task =>
-            task.id === taskId ? { ...task, status: newStatus } : task
-        ))
+    const getCurrentUserId = () => {
+        const user = localStorage.getItem('currentUser')
+        return user ? JSON.parse(user).id || JSON.parse(user).userId : null
+    }
+
+    const executeMove = async (taskId, newStatus) => {
+        try {
+            const task = tasks.find(t => t.id === taskId)
+            if (!task) return
+
+            const currentUserId = getCurrentUserId()
+
+            // Обработка действия "Взять" задачу
+            if (newStatus === 'in-progress' && task.status === 'todo') {
+                await updateTeamTaskStatus(taskId, 'in-progress', currentUserId)
+                setTasks(tasks.map(t => t.id === taskId ? { ...t, status: 'in-progress', userId: currentUserId } : t))
+                return
+            }
+
+            // Обработка действия "Переоткрыть" задачу
+            if (newStatus === 'reopen') {
+                await updateTeamTaskStatus(taskId, 'todo', null)
+                setTasks(tasks.map(t => t.id === taskId ? { ...t, status: 'todo', userId: null } : t))
+                return
+            }
+
+            // Обработка действия "Завершить" задачу
+            if (newStatus === 'done') {
+                await updateTeamTaskStatus(taskId, 'done', currentUserId)
+                setTasks(tasks.map(t => t.id === taskId ? { ...t, status: 'done' } : t))
+                return
+            }
+
+            // Стандартное обновление статуса
+            await updateTeamTaskStatus(taskId, newStatus)
+            setTasks(tasks.map(t => t.id === taskId ? { ...t, status: newStatus } : t))
+        } catch (error) {
+            console.error('Ошибка при обновлении статуса задачи:', error)
+            alert('Не удалось обновить статус задачи')
+        }
     }
 
     const getStatusChangeInfo = (currentStatus, newStatus) => {
@@ -119,9 +168,10 @@ export default function TeamTasksWindow({ teamData, onClose }) {
         if (currentStatus === 'done' && newStatus === 'in-progress') return { message: 'Невозможно перенести задачу в эту колонку.', type: 'warning' }
         if (currentStatus === 'done' && newStatus === 'todo') return { message: 'Вы точно хотите переоткрыть задачу?', type: 'confirm' }
         if (currentStatus === 'in-progress' && newStatus === 'todo') return { message: 'Вы точно хотите перенести задачу в эту колонку?', type: 'confirm' }
-        if (currentStatus === 'todo' && newStatus === 'done') return { message: 'Вы уверены , что задачу можно решить именно таким способом?', type: 'confirm' }
+        if (currentStatus === 'todo' && newStatus === 'done') return { message: 'Вы уверены, что задачу можно решить именно таким способом?', type: 'confirm' }
         if (currentStatus === 'todo' && newStatus === 'in-progress') return { message: 'Вы хотите взять задачу?', type: 'confirm' }
         if (currentStatus === 'in-progress' && newStatus === 'done') return { message: 'Вы готовы завершить задачу?', type: 'confirm' }
+        if (newStatus === 'reopen') return { message: 'Вы точно хотите переоткрыть задачу?', type: 'confirm' }
         return null
     }
 
@@ -176,7 +226,7 @@ export default function TeamTasksWindow({ teamData, onClose }) {
 
                 <div className="team-tasks-layout">
                     <div className="team-nav-sidebar">
-                        <button 
+                        <button
                             className={`team-nav-btn ${activeCategory === 'todo' ? 'active' : ''}`}
                             onClick={() => setActiveCategory('todo')}
                         >
@@ -184,7 +234,7 @@ export default function TeamTasksWindow({ teamData, onClose }) {
                             <div className="nav-bg-slide"></div>
                         </button>
 
-                        <button 
+                        <button
                             className={`team-nav-btn ${activeCategory === 'in-progress' ? 'active' : ''}`}
                             onClick={() => setActiveCategory('in-progress')}
                         >
@@ -192,7 +242,7 @@ export default function TeamTasksWindow({ teamData, onClose }) {
                             <div className="nav-bg-slide"></div>
                         </button>
 
-                        <button 
+                        <button
                             className={`team-nav-btn ${activeCategory === 'done' ? 'active' : ''}`}
                             onClick={() => setActiveCategory('done')}
                         >
@@ -200,7 +250,7 @@ export default function TeamTasksWindow({ teamData, onClose }) {
                             <div className="nav-bg-slide"></div>
                         </button>
 
-                        <button 
+                        <button
                             className="team-nav-btn btn-add-task-nav"
                             onClick={() => setIsAddOpen(true)}
                         >
@@ -210,14 +260,16 @@ export default function TeamTasksWindow({ teamData, onClose }) {
                     </div>
 
                     <div className="team-tasks-area custom-scrollbar">
-                        {filteredTasks.length === 0 ? (
+                        {isLoading ? (
+                            <div className="empty-state">Загрузка задач...</div>
+                        ) : filteredTasks.length === 0 ? (
                             <div className="empty-state">В этой категории задач нет</div>
                         ) : (
                             <div className="tasks-grid">
                                 {filteredTasks.map(task => (
-                                    <TeamTaskCard 
-                                        key={task.id} 
-                                        task={task} 
+                                    <TeamTaskCard
+                                        key={task.id}
+                                        task={task}
                                         onViewDetails={() => openViewDetails(task)}
                                         onAction={(newStatus) => handleActionClick(task.id, newStatus)}
                                         onEdit={openEditModal}
@@ -229,14 +281,19 @@ export default function TeamTasksWindow({ teamData, onClose }) {
                     </div>
                 </div>
 
-                <DettailTeamTaskCard 
-                    task={viewTask} 
-                    isOpen={isViewOpen} 
-                    onClose={() => setIsViewOpen(false)} 
+                <DettailTeamTaskCard
+                    task={viewTask}
+                    isOpen={isViewOpen}
+                    onClose={() => setIsViewOpen(false)}
                 />
             </div>
 
-            <AddTaskModal isOpen={isAddOpen} onClose={() => setIsAddOpen(false)} onSave={handleAddTask} />
+            <AddTaskModal
+                isOpen={isAddOpen}
+                onClose={() => setIsAddOpen(false)}
+                onSave={handleAddTask}
+                teamId={teamData.id}
+            />
 
             {isEditOpen && currentTask && (
                 <EditTaskModal task={currentTask} isOpen={isEditOpen} onClose={() => setIsEditOpen(false)} onSave={handleUpdateTask} />

@@ -4,9 +4,6 @@ const API_URL = 'http://localhost:5257/api'
 
 const apiClient = axios.create({
     baseURL: API_URL,
-    headers: {
-        'Content-Type': 'application/json',
-    },
     withCredentials: true,
 })
 
@@ -17,14 +14,11 @@ export const registerUser = async (userData) => {
 
 export const loginUser = async (credentials) => {
     const response = await apiClient.post('/auth/login', credentials)
-    
     const data = response.data
     const user = data.user || data.data || data
-    
     if (user && (user.id || user.userId)) {
         localStorage.setItem('currentUser', JSON.stringify(user))
     }
-    
     return response.data
 }
 
@@ -54,7 +48,8 @@ export const createTask = async (taskData) => {
 }
 
 export const updateTask = async (id, taskData) => {
-    const response = await apiClient.put(`/assignment/${id}`, taskData)
+    // Backend принимает PUT /api/assignment (без id в роуте)
+    const response = await apiClient.put(`/assignment`, taskData)
     return response.data
 }
 
@@ -85,12 +80,57 @@ export const getTeams = async () => {
 
 export const getTeamById = async (id) => {
     const response = await apiClient.get(`/team/${id}`)
-    return response.data
+    const teamData = response.data
+
+    // Если бэкенд возвращает members, используем их
+    if (teamData && teamData.members && Array.isArray(teamData.members)) {
+        // Помечаем лидера среди участников на основе leaderId
+        const leaderId = teamData.leaderId || teamData.LeaderId
+        if (leaderId) {
+            teamData.members.forEach(m => {
+                const memberId = m.id || m.userId || m.UserId || m.Id
+                if (memberId === leaderId) {
+                    m.isLeader = true
+                    m.roleName = 'Лидер'
+                } else {
+                    m.isLeader = false
+                    m.roleName = 'Участник'
+                }
+            })
+        }
+    } else if (teamData && (teamData.leaderId || teamData.LeaderId)) {
+        // Если members нет вообще, создаём список с лидером
+        const leaderId = teamData.leaderId || teamData.LeaderId
+        teamData.members = [{
+            id: leaderId,
+            userId: leaderId,
+            isLeader: true,
+            roleName: 'Лидер'
+        }]
+    }
+
+    return teamData
 }
 
-export const createTeam = async (teamData) => {
-    const response = await apiClient.post('/team', teamData)
-    return response.data
+export const createTeam = async (formData) => {
+    const response = await apiClient.post('/team', formData)
+    const createdTeam = response.data
+
+    // После создания команды, возвращаем обновлённые данные с лидером в составе участников
+    if (createdTeam && createdTeam.id) {
+        const leaderId = formData.LeaderId || formData.leaderId
+        if (leaderId) {
+            try {
+                // Обновляем данные команды с участниками
+                const updatedTeam = await getTeamById(createdTeam.id)
+                return updatedTeam
+            } catch (error) {
+                console.error('Ошибка при загрузке данных команды:', error)
+            }
+        }
+    }
+
+    return createdTeam
 }
 
 export const updateTeam = async (id, teamData) => {
@@ -104,8 +144,13 @@ export const deleteTeam = async (id) => {
 }
 
 export const addUserToTeam = async (teamId, userId) => {
-    const response = await apiClient.post(`/team/${teamId}/add-user`, userId)
-    return response.data
+    try {
+        const response = await apiClient.post(`/team/${teamId}/users/${userId}`)
+        return response.data
+    } catch (error) {
+        // Пробрасываем ошибку дальше, чтобы обработчик в компоненте мог её поймать
+        throw error
+    }
 }
 
 export const getUsers = async () => {
@@ -114,6 +159,90 @@ export const getUsers = async () => {
 }
 
 export const getUserById = async (id) => {
-    const response = await apiClient.get(`/user/${id}`)
+    try {
+        const response = await apiClient.get(`/user/${id}`)
+        return response.data
+    } catch (error) {
+        // Пробрасываем ошибку дальше, чтобы обработчик в компоненте мог её поймать
+        throw error
+    }
+}
+
+export const getTeamTasks = async (teamId) => {
+    const response = await apiClient.get(`/teamAssignment/team/${teamId}`)
     return response.data
+}
+
+export const createTeamTask = async (teamId, taskData) => {
+    const response = await apiClient.post('/teamAssignment', {
+        teamId: teamId,
+        name: taskData.title || taskData.name,
+        description: taskData.description,
+        priority: taskData.priority,
+        deadline: taskData.deadline
+    })
+    return response.data
+}
+
+export const updateTeamTask = async (teamId, taskId, taskData) => {
+    const response = await apiClient.put('/teamAssignment', {
+        id: taskId,
+        name: taskData.title || taskData.name,
+        description: taskData.description,
+        statusId: taskData.statusId,
+        userId: taskData.userId
+    })
+    return response.data
+}
+
+export const deleteTeamTask = async (teamId, taskId) => {
+    const response = await apiClient.delete(`/teamAssignment/${taskId}`)
+    return response.data
+}
+
+export const updateTeamTaskStatus = async (taskId, status, userId = null) => {
+    const statusIdMap = {
+        'todo': 1,
+        'in-progress': 2,
+        'done': 3
+    }
+    const statusId = statusIdMap[status] || 1
+
+    const response = await apiClient.put('/teamAssignment', {
+        id: taskId,
+        statusId: statusId,
+        userId: userId !== null ? userId : undefined
+    })
+    return response.data
+}
+
+export const takeTeamTask = async (taskId, userId) => {
+    const response = await apiClient.put('/teamAssignment', {
+        id: taskId,
+        statusId: 2,
+        userId: userId
+    })
+    return response.data
+}
+
+export const getTeamTaskById = async (taskId) => {
+    const response = await apiClient.get(`/teamAssignment/${taskId}`)
+    return response.data
+}
+
+export const removeUserFromTeam = async (teamId, userId) => {
+    const response = await apiClient.delete(`/team/${teamId}/users/${userId}`)
+    return response.data
+}
+
+export const changeTeamLeader = async (teamId, userId) => {
+    const response = await apiClient.patch(`/team/${teamId}/leader/${userId}`)
+    return response.data
+}
+
+export const deleteTeamTasks = async (teamId) => {
+    const tasks = await getTeamTasks(teamId)
+    for (const task of tasks) {
+        await deleteTeamTask(teamId, task.id)
+    }
 }

@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Net;
 using System.Text.Json;
+using Microsoft.Extensions.Hosting;
 
 namespace WebApplication1.Infrastructure.Middlewares;
 
@@ -39,8 +40,17 @@ public class ExceptionHandlingMiddleware
         catch (Exception ex)
         {
             _logger.LogError(ex, "Unhandled exception");
-            await HandleExceptionAsync(context, HttpStatusCode.InternalServerError, "Внутренняя ошибка сервера");
+            // Не скрываем причину, иначе отладка превращается в гадание.
+            // В проде это лучше поменять на общий текст, но сейчас важнее быстро починить.
+            await HandleExceptionAsync(context, HttpStatusCode.InternalServerError, BuildDevMessage(ex));
         }
+    }
+
+    private static string BuildDevMessage(Exception ex)
+    {
+        // Короткое, но информативное сообщение для фронта при отладке
+        var inner = ex.InnerException?.Message;
+        return inner == null ? ex.Message : $"{ex.Message} | Inner: {inner}";
     }
 
     private static async Task HandleExceptionAsync(HttpContext context, HttpStatusCode statusCode, string message)

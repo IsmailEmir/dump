@@ -15,14 +15,12 @@ public class TeamRepository : ITeamRepository
         await _context.Teams
             .Include(t => t.Leader)
             .Include(t => t.Members)
-            .Include(t => t.Assignments)
             .ToListAsync();
 
     public async Task<Team?> GetByIdAsync(int id) =>
          await _context.Teams
             .Include(t => t.Leader)
             .Include(t => t.Members)
-            .Include(t => t.Assignments)
             .FirstOrDefaultAsync(t => t.Id == id);
 
     public async Task<IEnumerable<User>> GetUsersInTeamAsync(int teamId)
@@ -64,14 +62,14 @@ public class TeamRepository : ITeamRepository
         await _context.SaveChangesAsync();
     }
 
-    public async Task AddUserToTeamAsync(string email, int teamId)
+    public async Task AddUserToTeamAsync(int userId, int teamId)
     {
         var user = await _context.Users
-            .FirstOrDefaultAsync(u => u.Email == email);
+            .FirstOrDefaultAsync(u => u.Id == userId);
 
         if (user == null)
         {
-            throw new Exception("User not found");
+            throw new Exception("Пользователь не найден");
         }
 
         var team = await _context.Teams
@@ -80,16 +78,18 @@ public class TeamRepository : ITeamRepository
 
         if (team == null)
         {
-            throw new Exception("Team not found");
+            throw new Exception("Команда не найдена");
         }
 
-        bool alreadyInTeam = team.Members.Any(t => t.Id == user.Id);
+        bool alreadyInTeam = team.Members.Any(m => m.Id == userId);
 
-        if (!alreadyInTeam)
+        if (alreadyInTeam)
         {
-            user.Teams.Add(team);
-            await _context.SaveChangesAsync();
+            throw new Exception("Пользователь уже состоит в команде");
         }
+
+        user.Teams.Add(team);
+        await _context.SaveChangesAsync();
     }
 
     public async Task RemoveUserFromTeamAsync(int teamId,int userId)
@@ -111,7 +111,7 @@ public class TeamRepository : ITeamRepository
             throw new Exception("Team not found");
         }
 
-        bool alreadyInTeam = user.Teams.Any(t => t.Id == userId);
+        bool alreadyInTeam = user.Teams.Any(t => t.Id == teamId);
 
         if (alreadyInTeam)
         {

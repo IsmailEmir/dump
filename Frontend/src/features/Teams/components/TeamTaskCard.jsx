@@ -23,19 +23,33 @@ const TeamTaskCard = ({ task, onViewDetails, onAction, onEdit, onDelete }) => {
         return 'rgba(255,255,255,0.3)'
     }
 
+    const getCurrentUserId = () => {
+        const user = localStorage.getItem('currentUser')
+        return user ? JSON.parse(user).id || JSON.parse(user).userId : null
+    }
+
     const getButtons = () => {
+        const currentUserId = getCurrentUserId()
+        const isExecutor = task.userId === currentUserId
+
         switch (task.status) {
             case 'todo':
                 return <button className="team-action-btn" onClick={() => onAction('in-progress')} style={{ borderColor: '#EEE8AA' }}>Взять</button>
             case 'in-progress':
+                if (!isExecutor) {
+                    return null
+                }
                 return (
                     <>
-                        <button className="team-action-btn" onClick={() => onAction('todo')}>Переоткрыть</button>
+                        <button className="team-action-btn" onClick={() => onAction('reopen')}>Переоткрыть</button>
                         <button className="team-action-btn" onClick={() => onAction('done')} style={{ borderColor: '#098765' }}>Завершить</button>
                     </>
                 )
             case 'done':
-                return <button className="team-action-btn" onClick={() => onAction('todo')}>Переоткрыть</button>
+                if (!isExecutor) {
+                    return null
+                }
+                return <button className="team-action-btn" onClick={() => onAction('reopen')}>Переоткрыть</button>
             default:
                 return null
         }
@@ -69,8 +83,10 @@ const TeamTaskCard = ({ task, onViewDetails, onAction, onEdit, onDelete }) => {
 
             <div className="task-footer-dates">
                 <div className="date-row">
-                    <span className="task-date-label">Создано:&nbsp;</span>
-                    <span className="date-value">{formatDate(task.createdAt)}</span>
+                    <span className="task-date-label">
+                        {task.updatedAt ? 'Редактировано:' : 'Создано:'}&nbsp;
+                    </span>
+                    <span className="date-value">{formatDate(task.updatedAt ?? task.createdAt)}</span>
                 </div>
 
                 {task.deadline && (

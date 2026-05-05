@@ -1,17 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import '../styles/StyleSettingsWindow.css';
 import '../../../styles/common-ui.css'
 import { useTranslation } from '../../../i18n/LanguageContext';
 
 function SettingsModal({ isOpen, onClose }) {
-    const { t } = useTranslation();
-    // Загружаем сохраненные настройки при открытии
+    const { t, language, setLanguage } = useTranslation();
+    
     const loadSettings = () => {
         const saved = localStorage.getItem('appSettings');
         if (saved) {
             return JSON.parse(saved);
         }
-        // Значения по умолчанию
         return {
             darkTheme: true,
             notifications: true,
@@ -22,42 +21,52 @@ function SettingsModal({ isOpen, onClose }) {
 
     const [settings, setSettings] = useState(loadSettings);
 
-    // Применяем настройки глобально
-    const applySettings = (newSettings) => {
-    // Смена темы
-    document.documentElement.setAttribute('data-theme', newSettings.darkTheme ? 'dark' : 'light');
-    document.body.setAttribute('data-theme', newSettings.darkTheme ? 'dark' : 'light');
-        
-        // Смена языка
-        document.documentElement.lang = newSettings.language;
+    const applyTheme = (isDark) => {
+        const themeValue = isDark ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', themeValue);
+        document.body.setAttribute('data-theme', themeValue);
+        localStorage.setItem('theme', themeValue);
+    };
 
-        // Анимации
-        if (!newSettings.animations) {
+    const applyAnimations = (enabled) => {
+        if (!enabled) {
             document.body.classList.add('no-animations');
         } else {
             document.body.classList.remove('no-animations');
         }
+    };
 
-        // Сохраняем в localStorage
+    const applySettingsToDOM = (newSettings) => {
+        applyTheme(newSettings.darkTheme);
+        applyAnimations(newSettings.animations);
+        
+        if (newSettings.language && newSettings.language !== language) {
+            setLanguage(newSettings.language);
+        }
+
         localStorage.setItem('appSettings', JSON.stringify(newSettings));
     };
 
-    // Применяем настройки при первом рендере
-    React.useEffect(() => {
-        applySettings(settings);
+    useEffect(() => {
+        applySettingsToDOM(settings);
     }, []);
 
     const handleToggle = (key) => {
-        setSettings(prev => ({
-            ...prev,
-            [key]: !prev[key]
-        }));
+        const newSettings = {
+            ...settings,
+            [key]: !settings[key]
+        };
+        setSettings(newSettings);
+        applySettingsToDOM(newSettings);
     };
 
-    const handleSave = () => {
-        applySettings(settings);
-        window.dispatchEvent(new Event('languageChanged'));
-        onClose();
+    const handleLanguageChange = (newLang) => {
+        const newSettings = {
+            ...settings,
+            language: newLang
+        };
+        setSettings(newSettings);
+        applySettingsToDOM(newSettings);
     };
 
     if (!isOpen) return null;
@@ -89,6 +98,7 @@ function SettingsModal({ isOpen, onClose }) {
                                     checked={settings.darkTheme} 
                                     onChange={() => handleToggle('darkTheme')}
                                 />
+                                <span className="toggle-slider"></span>
                             </label>
                         </div>
 
@@ -108,7 +118,6 @@ function SettingsModal({ isOpen, onClose }) {
                         </div>
                     </div>
 
-                    {/* Секция Уведомления */}
                     <div className="settings-section">
                         <h3 className="section-title">{t('notificationsSection')}</h3>
                         
@@ -129,7 +138,6 @@ function SettingsModal({ isOpen, onClose }) {
 
                     </div>
 
-                    {/* Секция Общие */}
                     <div className="settings-section">
                         <h3 className="section-title">{t('general')}</h3>
 
@@ -140,13 +148,8 @@ function SettingsModal({ isOpen, onClose }) {
                             </div>
                             <select 
                                 className="settings-select" 
-                                value={settings.language} 
-                                onChange={(e) => {
-                                    setSettings(prev => ({
-                                        ...prev,
-                                        language: e.target.value
-                                    }));
-                                }}
+                                value={settings.language || language} 
+                                onChange={(e) => handleLanguageChange(e.target.value)}
                             >
                                 <option value="ru">Русский</option>
                                 <option value="en">English</option>
@@ -159,14 +162,11 @@ function SettingsModal({ isOpen, onClose }) {
                 </div>
 
                 <div className="modal-buttons settings-buttons">
-                    <button className="btn-cancel" onClick={onClose}>
+                    <button className="btn-cancel" onClick={onClose} 
+                    style=
+                    {{ borderColor: 'rgba(255, 255, 255, 0.3)' , width: '50%', margin: '0 auto'}}>
                         <span className="btn-text">{t('cancel')}</span>
                         <img src="https://img.icons8.com/?size=96&id=DXECg4JU1n2x&format=png" alt="Check" className="btn-icon"/>
-                        <div className="btn-bg-slide"></div>
-                    </button>
-                    <button className="btn-save" onClick={handleSave}>
-                        <span className="btn-text">{t('saveSettings')}</span>
-                        <img src="https://img.icons8.com/?size=96&id=2WnpVEXfzAbC&format=png" alt="Check" className="btn-icon"/>
                         <div className="btn-bg-slide"></div>
                     </button>
                 </div>

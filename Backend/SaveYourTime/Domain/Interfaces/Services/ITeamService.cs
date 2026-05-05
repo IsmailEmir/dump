@@ -12,7 +12,7 @@ public interface ITeamService
     Task CreateAsync(TeamInput input);
     Task UpdateAsync(TeamInput input);
     Task DeleteAsync(int id);
-    Task AddUserToTeamAsync(string email, int teamId);
+    Task AddUserToTeamAsync(int userId, int teamId);
     Task RemoveUserFromTeamAsync(int teamId, int userId);
     Task SetTeamLeaderAsync(int teamId, int userId);
 }

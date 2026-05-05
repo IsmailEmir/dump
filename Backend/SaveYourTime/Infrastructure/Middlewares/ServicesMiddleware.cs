@@ -1,5 +1,6 @@
 using WebApplication1.Application.Services;
 using WebApplication1.Domain.Interfaces.Services;
+using WebApplication1.Infrastructure.Services;
 
 namespace WebApplication1.Infrastructure.Middlewares;
 
@@ -10,9 +11,11 @@ public static class ServicesMiddleware
         services.AddHttpContextAccessor(); 
         services.AddScoped<ICurrentUserService, CurrentUserService>();
         services.AddScoped<IAssignmentService, AssignmentService>();
+        services.AddScoped<ITeamAssignmentService, TeamAssignmentService>();
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<IRoleService, RoleService>();
         services.AddScoped<ITeamService, TeamService>();
         services.AddScoped<IUserService, UserService>();
+        services.AddScoped<IFileStorageService, FileStorageService>();
     }
 }

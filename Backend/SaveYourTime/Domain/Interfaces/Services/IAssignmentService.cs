@@ -11,7 +11,7 @@ public interface IAssignmentService
     Task<IEnumerable<AssignmentResponse>> GetByFilterAsync(FilterAssigmentInput input);
     
     Task<int> CreateAsync(AssignmentInput input);
-    Task UpdateAsync(ChangeAssigmentInput input);
+    Task<AssignmentResponse> UpdateAsync(ChangeAssigmentInput input);
     Task DeleteAsync(int id);
     Task UpdateStatusAsync(int assignmentId, string status);
     Task ChangeOwnerAsync(int assignmentId, int newUserId);

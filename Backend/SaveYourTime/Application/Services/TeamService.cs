@@ -60,9 +60,10 @@ public class TeamService : ITeamService
         {
             Name = input.Name,
             Description = input.Description,
+            AvatarUrl = input.AvatarUrl,
             LeaderId = user!.Id,
             CreatedAt = DateTime.UtcNow,
-            
+
             Members = [user]
         };
 
@@ -77,6 +78,7 @@ public class TeamService : ITeamService
 
         team.Name = input.Name;
         team.Description = input.Description;
+        team.AvatarUrl = input.AvatarUrl;
 
         await _teamRepository.UpdateAsync(team);
     }
@@ -86,9 +88,9 @@ public class TeamService : ITeamService
         await _teamRepository.DeleteAsync(id);
     }
 
-    public async Task AddUserToTeamAsync(string email, int teamId)
+    public async Task AddUserToTeamAsync(int userId, int teamId)
     {
-        await _teamRepository.AddUserToTeamAsync(email, teamId);
+        await _teamRepository.AddUserToTeamAsync(userId, teamId);
     }
 
     public async Task RemoveUserFromTeamAsync(int teamId, int userId)
@@ -107,13 +109,23 @@ public class TeamService : ITeamService
 
     private TeamResponse MapToResponse(Team team)
     {
+        var members = team.Members?.Select(m => new UserResponse(
+            m.Id,
+            m.Username,
+            m.Email ?? string.Empty,
+            m.CreatedAt,
+            m.Assignments?.Count(a => a.StatusId == 3) ?? 0
+        )).ToList();
+
         return new TeamResponse(
             team.Id,
             team.Name,
             team.Description,
+            team.AvatarUrl,
             team.LeaderId,
             team.Leader?.Username,
-            team.CreatedAt
+            team.CreatedAt,
+            members
         );
     }
 
@@ -128,7 +140,8 @@ public class TeamService : ITeamService
             a.Status.Name,
             a.Priority.Name,
             a.Deadline,
-            a.CreatedAt
+            a.CreatedAt,
+            a.UpdatedAt
         );
     }
 }

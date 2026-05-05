@@ -46,9 +46,13 @@ public class AssignmentService : IAssignmentService
 
     public async Task<IEnumerable<AssignmentResponse>> GetByFilterAsync(FilterAssigmentInput input)
     {
+        var currentUserId = _currentUserService.GetCurrentUserId()
+                            ?? throw new UnauthorizedAccessException("Пользователь не аутентифицирован");
+
         var assignments = _assignmentRepository
-            .GetByFilterAsync(input.UserId, input.Filter)
+            .GetByFilterAsync(currentUserId, input.Filter)
             .AsEnumerable();
+
         return assignments.Select(MapToResponse);
     }
 
@@ -75,7 +79,8 @@ public class AssignmentService : IAssignmentService
             StatusId = 1, // статус новая по умолчанию
             PriorityId = priorityId,
             Deadline = input.Deadline,
-            CreatedAt = DateTime.UtcNow
+            CreatedAt = DateTime.UtcNow,
+            UpdatedAt = null
         };
 
         await _assignmentRepository.CreateAsync(assignment);
@@ -85,46 +90,32 @@ public class AssignmentService : IAssignmentService
         return assignment.Id;
     }
 
-    public async Task UpdateAsync(ChangeAssigmentInput input)
+    public async Task<AssignmentResponse> UpdateAsync(ChangeAssigmentInput input)
     {
-        var currentUserId = _currentUserService.GetCurrentUserId()
-                            ?? throw new UnauthorizedAccessException("Пользователь не аутентифицирован");
-
         var assignment = await _assignmentRepository.GetByIdAsync(input.AssigmentId);
         if (assignment == null)
             throw new Exception("Задача не найдена");
-
-        // Проверка: пользователь должен быть владельцем задачи
-        if (assignment.UserId != currentUserId)
-            throw new UnauthorizedAccessException("У вас нет прав на редактирование этой задачи");
 
         assignment.Title = input.Title;
         assignment.Description = input.Description;
         assignment.PriorityId = MapPriority(input.Priority);
         assignment.Deadline = input.Deadline;
+        assignment.UpdatedAt = DateTime.UtcNow;
 
         await _assignmentRepository.UpdateAsync(assignment);
+        
+        // Перечитывать не нужно: EF уже обновил сущность; навигации у нас загружены (GetByIdAsync делает Include)
+        return MapToResponse(assignment);
     }
 
     public async Task DeleteAsync(int id)
     {
-        var currentUserId = _currentUserService.GetCurrentUserId()
-                            ?? throw new UnauthorizedAccessException("Пользователь не аутентифицирован");
-
-        var assignment = await _assignmentRepository.GetByIdAsync(id);
-        if (assignment == null)
-            throw new Exception("Задача не найдена");
-
-        // Проверка: пользователь должен быть владельцем задачи
-        if (assignment.UserId != currentUserId)
-            throw new UnauthorizedAccessException("У вас нет прав на удаление этой задачи");
-
         await _assignmentRepository.DeleteAsync(id);
     }
 
     public async Task UpdateStatusAsync(int assignmentId, string status)
     {
-        int statusId = MapPriority(status);
+        int statusId = MapStatus(status);
 
         await _assignmentRepository.UpdateStatusAsync(assignmentId, statusId);
     }
@@ -153,7 +144,8 @@ public class AssignmentService : IAssignmentService
             a.Status.Name,
             a.Priority.Name,
             a.Deadline,
-            a.CreatedAt
+            a.CreatedAt,
+            a.UpdatedAt
         );
     }
 
@@ -165,6 +157,18 @@ public class AssignmentService : IAssignmentService
             "medium" => 2,
             "high" => 3,
             _ => 2
+        };
+    }
+
+    private int MapStatus(string status)
+    {
+        var s = status.Trim().ToLowerInvariant();
+        return s switch
+        {
+            "todo" => 1,
+            "in-progress" => 2,
+            "done" => 3,
+            _ => 1
         };
     }
 }

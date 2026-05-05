@@ -9,7 +9,7 @@ export default function DeleteTaskModal({ task, isOpen, onClose, onConfirm }) {
 
     const handleDeleteClick = () => {
         onClose()
-        setTimeout(onConfirm, 100)
+        setTimeout(onConfirm, 0)
     }
 
     return (

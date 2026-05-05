@@ -1,4 +1,5 @@
 ﻿using WebApplication1.Infrastructure.Contexts;
+using Microsoft.EntityFrameworkCore;
 
 namespace WebApplication1.Infrastructure.Middlewares;
 
@@ -12,7 +13,18 @@ public static class DatabaseMiddleware
         try
         {
             var context = services.GetRequiredService<ApplicationDbContext>();
-            context.Database.EnsureCreated(); 
+            context.Database.Migrate();
+
+            // Быстрый "страховочный" патч схемы: если миграции по какой-то причине не применились,
+            // добавляем новые колонки idempotent-образом, чтобы приложение не падало.
+            context.Database.ExecuteSqlRaw("""
+                ALTER TABLE "TeamAssignments"
+                ADD COLUMN IF NOT EXISTS "UpdatedAt" timestamp with time zone NULL;
+                """);
+            context.Database.ExecuteSqlRaw("""
+                ALTER TABLE "Assignments"
+                ADD COLUMN IF NOT EXISTS "UpdatedAt" timestamp with time zone NULL;
+                """);
         }
         catch (Exception ex)
         {

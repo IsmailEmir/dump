@@ -36,6 +36,15 @@ const DettailTeamTaskCard = ({ task, isOpen, onClose }) => {
         }
     }
 
+    const getExecutorName = () => {
+        if (task.userId && task.userName) {
+            return task.userName
+        } else if (task.userId) {
+            return `Пользователь #${task.userId}`
+        }
+        return 'не назначено'
+    }
+
     return (
         <div className="desc-modal-overlay" onClick={onClose}>
             <div className="desc-modal-content custom-scrollbar" onClick={(e) => e.stopPropagation()}>
@@ -55,9 +64,9 @@ const DettailTeamTaskCard = ({ task, isOpen, onClose }) => {
                     <div className="task-info-section">
                         <div className="info-block">
                             <div className="info-block-label">Исполнитель:</div>
-                            <div className="info-block-value">не назначено</div>
+                            <div className="info-block-value">{getExecutorName()}</div>
                         </div>
-                        
+
                         <div className="info-block">
                             <div className="info-block-label">Важность:</div>
                             <div className="priority-indicator-wrapper">
@@ -70,8 +79,10 @@ const DettailTeamTaskCard = ({ task, isOpen, onClose }) => {
 
                 <div className="task-dates-wrapper">
                     <div className="date-info">
-                        <span className="date-label">Создано:</span>
-                        <span className="date-value">{formatDate(task.createdAt)}</span>
+                        <span className="date-label">
+                            {task.updatedAt ? 'Редактировано:' : 'Создано:'}
+                        </span>
+                        <span className="date-value">{formatDate(task.updatedAt ?? task.createdAt)}</span>
                     </div>
                     <div className="date-info">
                         <span className="date-label">Дедлайн:</span>

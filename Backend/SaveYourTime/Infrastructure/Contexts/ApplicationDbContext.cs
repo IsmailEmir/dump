@@ -12,6 +12,7 @@ public class ApplicationDbContext : DbContext
     public DbSet<Role> Roles => Set<Role>();
     public DbSet<Team> Teams => Set<Team>();
     public DbSet<Assignment> Assignments => Set<Assignment>();
+    public DbSet<TeamAssignment> TeamAssignments => Set<TeamAssignment>();
     public DbSet<AssignmentStatus> AssignmentStatuses => Set<AssignmentStatus>();
     public DbSet<AssignmentPriority> AssignmentPriorities => Set<AssignmentPriority>();
 
@@ -73,5 +74,23 @@ public class ApplicationDbContext : DbContext
             .WithMany(p => p.Assignments)
             .HasForeignKey(a => a.PriorityId)
             .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<TeamAssignment>()
+            .HasOne(a => a.Team)
+            .WithMany(t => t.TeamAssignments)
+            .HasForeignKey(a => a.TeamId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<TeamAssignment>()
+            .HasOne(a => a.Status)
+            .WithMany(s => s.TeamAssignments)
+            .HasForeignKey(a => a.StatusId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<TeamAssignment>()
+            .HasOne(a => a.User)
+            .WithMany()
+            .HasForeignKey(a => a.UserId)
+            .OnDelete(DeleteBehavior.SetNull);
     }
 }

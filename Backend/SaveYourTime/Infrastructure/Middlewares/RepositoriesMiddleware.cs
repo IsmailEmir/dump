@@ -11,6 +11,7 @@ public static class RepositoriesMiddlewares
         services.AddScoped<IAssignmentRepository, AssignmentRepository>();
         services.AddScoped<IRoleRepository, RoleRepository>();
         services.AddScoped<ITeamRepository, TeamRepository>();
+        services.AddScoped<ITeamAssignmentRepository, TeamAssignmentRepository>();
         services.AddScoped<IAssignmentStatusRepository, AssignmentStatusRepository>();
         services.AddScoped<IAssignmentPriorityRepository, AssignmentPriorityRepository>();
     }

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import './MainLayout.css'
 import { useTranslation } from '../i18n/LanguageContext'
-import { getAssignmentById, getAssignments, getCurrentUser, createTask, updateTask, deleteTask } from '../services/api'
+import { getAssignments, getCurrentUser, updateTask, deleteTask } from '../services/api'
 
 import AddTaskModal from '../features/Tasks/components/AddTaskModal'
 import DeleteTaskModal from '../features/Tasks/components/DeleteTaskModal'
@@ -10,12 +10,11 @@ import TaskCard from '../features/Tasks/components/TaskCard'
 import TeamStartWindow from '../features/Teams/components/TeamStartWindow'
 import TaskDescriptionModal from '../features/Tasks/components/TaskDescriptionModal'
 import ProfileModal from '../features/Profile/components/ProfileModal'
-import SettingsModal from '../features/Settings/components/SettingsModal';
+import SettingsModal from '../features/Settings/components/SettingsModal'
 
 function MainLayout({ onLogout }) {
     const { t } = useTranslation();
     const [tasks, setTasks] = useState([])
-    const [tasksError, setTasksError] = useState('')
     const [isAddOpen, setIsAddOpen] = useState(false)
     const [isEditOpen, setIsEditOpen] = useState(false)
     const [isDeleteOpen, setIsDeleteOpen] = useState(false)
@@ -23,9 +22,8 @@ function MainLayout({ onLogout }) {
     const [isTeamOpen, setIsTeamOpen] = useState(false)
     const [currentTask, setCurrentTask] = useState(null)
     const [isProfileOpen, setIsProfileOpen] = useState(false)
-    const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+    const [isSettingsOpen, setIsSettingsOpen] = useState(false)
     const [currentUser, setCurrentUser] = useState(null)
-    const [isCreating, setIsCreating] = useState(false)
 
     const normalizeTask = (raw) => {
         if (!raw || typeof raw !== 'object') return raw
@@ -37,83 +35,46 @@ function MainLayout({ onLogout }) {
             priority: raw.priority ?? raw.Priority ?? null,
             deadline: raw.deadline ?? raw.Deadline ?? null,
             createdAt: raw.createdAt ?? raw.CreatedAt ?? raw.created ?? raw.Created ?? null,
+            updatedAt: raw.updatedAt ?? raw.UpdatedAt ?? raw.editedAt ?? raw.EditedAt ?? null,
+            teamId: raw.teamId ?? raw.TeamId ?? null,
+            userId: raw.userId ?? raw.UserId ?? null,
+            assigneeId: raw.assigneeId ?? raw.AssigneeId ?? null,
         }
     }
 
     useEffect(() => {
         const user = getCurrentUser()
-        setCurrentUser(user?.id)
+        setCurrentUser(user?.id ?? user?.userId ?? null)
     }, [])
 
     useEffect(() => {
+        if (currentUser === null) return
+
         let cancelled = false
 
         const load = async () => {
             try {
-                setTasksError('')
                 const data = await getAssignments()
                 if (cancelled) return
                 const normalized = Array.isArray(data) ? data.map(normalizeTask) : []
-                const userTasks = currentUser ? normalized.filter(task => task.assigneeId === currentUser || task.userId === currentUser) : normalized
+                const userTasks = normalized.filter(task =>
+                    !task.teamId &&
+                    (task.userId === currentUser || task.assigneeId === currentUser)
+                )
                 setTasks(userTasks)
             } catch (e) {
                 if (cancelled) return
-                setTasksError('Не удалось загрузить задачи. Проверь, что бэкенд запущен и доступен.')
                 setTasks([])
             }
         }
 
         load()
-        return () => {
-            cancelled = true
-        }
+        return () => { cancelled = true }
     }, [currentUser])
 
-    const handleSaveTask = async (newTask) => {
-        setIsCreating(true)
-        try {
-            // Пытаемся создать задачу через API
-            // Если функция createTask выбрасывает ошибку, но задача создается на бэкенде,
-            // мы все равно перейдем в блок finally/catch для обновления списка
-            if (typeof createTask === 'function') {
-                await createTask(newTask)
-            } else {
-                throw new Error('Функция createTask не найдена в API')
-            }
-            
-            // Успешное создание: загружаем свежий список
-            const data = await getAssignments()
-            const refreshed = Array.isArray(data) ? data.map(normalizeTask) : []
-            const userTasks = currentUser ? refreshed.filter(task => task.assigneeId === currentUser || task.userId === currentUser) : refreshed
-            setTasks(userTasks)
-            setIsAddOpen(false)
-        } catch (error) {
-            console.warn('Предупреждение при создании задачи:', error)
-            // Даже если произошла ошибка (или бэкенд вернул странный ответ),
-            // пробуем загрузить список, так как задача могла сохраниться.
-            // Это решает проблему "ошибка есть, но после F5 задача видна".
-            try {
-                const data = await getAssignments()
-                const refreshed = Array.isArray(data) ? data.map(normalizeTask) : []
-                const userTasks = currentUser ? refreshed.filter(task => task.assigneeId === currentUser || task.userId === currentUser) : refreshed
-                
-                // Проверяем, появилась ли задача в списке (по названию или другим признакам, если нужно)
-                // Для простоты просто обновляем весь список
-                setTasks(userTasks)
-                
-                // Если задача нашлась в списке после "ошибки", считаем успехом и закрываем модалку
-                const taskExists = refreshed.some(t => t.title === newTask.title)
-                if (taskExists) {
-                    setIsAddOpen(false)
-                } else {
-                    setTasksError('Задача создана, но произошла ошибка при обновлении списка. Попробуйте обновить страницу.')
-                }
-            } catch (loadError) {
-                setTasksError('Не удалось создать задачу или обновить список.')
-            }
-        } finally {
-            setIsCreating(false)
-        }
+    const handleSaveTask = (createdTask) => {
+        const normalized = normalizeTask(createdTask)
+        setTasks(prev => [...prev, normalized])
     }
 
     const openEditModal = (task) => {
@@ -124,22 +85,25 @@ function MainLayout({ onLogout }) {
     const handleUpdateTask = async (updatedTask) => {
         try {
             await updateTask(updatedTask.id, {
+                assigmentId: updatedTask.id,
+                userId: currentUser,
                 title: updatedTask.title,
                 description: updatedTask.description,
                 priority: updatedTask.priority,
                 deadline: updatedTask.deadline
             })
-            
-            // Обновляем список задач после успешного обновления
+        } catch (e) {
+            console.error('Ошибка при обновлении задачи:', e)
+        } finally {
             const data = await getAssignments()
             const refreshed = Array.isArray(data) ? data.map(normalizeTask) : []
-            const userTasks = currentUser ? refreshed.filter(task => task.assigneeId === currentUser || task.userId === currentUser) : refreshed
+            const userTasks = refreshed.filter(task =>
+                !task.teamId &&
+                (task.userId === currentUser || task.assigneeId === currentUser)
+            )
             setTasks(userTasks)
             setIsEditOpen(false)
             setCurrentTask(null)
-        } catch (error) {
-            console.error('Ошибка при обновлении задачи:', error)
-            setTasksError('Не удалось обновить задачу. Проверьте соединение с сервером.')
         }
     }
 
@@ -151,17 +115,18 @@ function MainLayout({ onLogout }) {
     const handleDeleteTask = async (taskId) => {
         try {
             await deleteTask(taskId)
-            
-            // Обновляем список задач после успешного удаления
+        } catch (e) {
+            console.error('Ошибка при удалении задачи:', e)
+        } finally {
             const data = await getAssignments()
             const refreshed = Array.isArray(data) ? data.map(normalizeTask) : []
-            const userTasks = currentUser ? refreshed.filter(task => task.assigneeId === currentUser || task.userId === currentUser) : refreshed
+            const userTasks = refreshed.filter(task =>
+                !task.teamId &&
+                (task.userId === currentUser || task.assigneeId === currentUser)
+            )
             setTasks(userTasks)
             setIsDeleteOpen(false)
             setCurrentTask(null)
-        } catch (error) {
-            console.error('Ошибка при удалении задачи:', error)
-            setTasksError('Не удалось удалить задачу. Проверьте соединение с сервером.')
         }
     }
 
@@ -179,7 +144,7 @@ function MainLayout({ onLogout }) {
 
             <section className="leftPanel">
                 <div id="rectangle-left-panel" className="glass-panel">
-                    
+
                     <div className="panel-top-group">
                         <button
                             id="profile-icon"
@@ -226,7 +191,7 @@ function MainLayout({ onLogout }) {
                     >
                         <svg className="icon-svg" width="40" height="40" viewBox="0 0 40 40"><circle cx="20" cy="20" r="18" fill="none" stroke="#fff" strokeWidth="2" strokeDasharray="120 400" strokeDashoffset="120"/></svg>
                         <img src="https://img.icons8.com/?size=96&id=xyFoc6U1Hu3c&format=png" alt={t('navSettings')} className="img-default"/>
-                            <span className="icon-text">{t('navSettings')}</span>
+                        <span className="icon-text">{t('navSettings')}</span>
                     </button>
                 </div>
             </section>
@@ -240,11 +205,10 @@ function MainLayout({ onLogout }) {
                         onClick={() => setIsAddOpen(true)}
                         title={t('addTask')}
                         aria-label={t('addTask')}
-                        disabled={isCreating}
                     >
                         <svg className="icon-svg" width="40" height="40" viewBox="0 0 40 40"><circle cx="20" cy="20" r="18" fill="none" stroke="#fff" strokeWidth="2" strokeDasharray="120 400" strokeDashoffset="120"/></svg>
                         <img src="https://img.icons8.com/?size=96&id=1OvPrBUWbMke&format=png" alt={t('addTask')} className="img-default"/>
-                            <span className="icon-text">{t('addTask')}</span>
+                        <span className="icon-text">{t('addTask')}</span>
                     </button>
                 </div>
             </section>
@@ -252,11 +216,6 @@ function MainLayout({ onLogout }) {
             <div className="tasks-panel-container">
                 <div className="tasks-scroll-wrapper custom-scrollbar">
                     <div className="tasks-grid">
-                        {tasksError && (
-                            <div style={{ color: '#ff5252', textAlign: 'center', marginBottom: '10px', fontSize: '14px' }}>
-                                {tasksError}
-                            </div>
-                        )}
                         {tasks.map(task => (
                             <TaskCard
                                 key={task.id}
@@ -270,11 +229,12 @@ function MainLayout({ onLogout }) {
                 </div>
             </div>
 
-            <AddTaskModal 
-                isOpen={isAddOpen} 
-                onClose={() => !isCreating && setIsAddOpen(false)} 
-                onSave={handleSaveTask} 
-                token={localStorage.getItem('token')} 
+            <AddTaskModal
+                isOpen={isAddOpen}
+                onClose={() => setIsAddOpen(false)}
+                onSave={handleSaveTask}
+                token={localStorage.getItem('token')}
+                teamId={null}
             />
 
             {isEditOpen && currentTask && (
@@ -294,13 +254,13 @@ function MainLayout({ onLogout }) {
             )}
 
             <TeamStartWindow isOpen={isTeamOpen} onClose={() => setIsTeamOpen(false)} />
-            
-            <ProfileModal 
-                isOpen={isProfileOpen} 
-                onClose={() => setIsProfileOpen(false)} 
-                onLogout={onLogout} 
+
+            <ProfileModal
+                isOpen={isProfileOpen}
+                onClose={() => setIsProfileOpen(false)}
+                onLogout={onLogout}
             />
-            
+
             <SettingsModal isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} />
         </>
     )

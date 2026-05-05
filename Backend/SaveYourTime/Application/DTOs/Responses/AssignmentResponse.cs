@@ -9,5 +9,6 @@ public record AssignmentResponse(
     string Status,      
     string Priority,
     DateTime? Deadline,
-    DateTime CreatedAt
+    DateTime CreatedAt,
+    DateTime? UpdatedAt
 );

@@ -1,19 +1,19 @@
 import React, { useState, useRef, useEffect } from 'react'
 import '../styles.css'
 import '../../../styles/common-ui.css'
-import { createTask } from '../../../services/api' // <-- Закомментируй импорт, если он больше нигде не нужен в этом файле
-import DateTimePicker from './DateTimePicker' 
+import { createTask, getCurrentUser, createTeamTask } from '../../../services/api'
+import DateTimePicker from './DateTimePicker'
 import { useTranslation } from '../../../i18n/LanguageContext'
 
-export default function AddTaskModal({ isOpen, onClose, onSave, token }) {
+export default function AddTaskModal({ isOpen, onClose, onSave, token, teamId }) {
     const { t } = useTranslation();
     const [title, setTitle] = useState('')
     const [description, setDescription] = useState('')
     const [priority, setPriority] = useState(null)
-    
-    const [deadlineDate, setDeadlineDate] = useState(null) 
-    const [deadlineTime, setDeadlineTime] = useState('12:00') 
-    
+
+    const [deadlineDate, setDeadlineDate] = useState(null)
+    const [deadlineTime, setDeadlineTime] = useState('12:00')
+
     const [inputValue, setInputValue] = useState('')
 
     const [isCalendarOpen, setIsCalendarOpen] = useState(false)
@@ -34,7 +34,7 @@ export default function AddTaskModal({ isOpen, onClose, onSave, token }) {
                 setIsCalendarOpen(false)
             }
         }
-        
+
         document.addEventListener('mousedown', handleClickOutside)
         return () => document.removeEventListener('mousedown', handleClickOutside)
     }, [isOpen])
@@ -86,11 +86,10 @@ export default function AddTaskModal({ isOpen, onClose, onSave, token }) {
         return formatted;
     };
 
-
     const handleDeadlineChange = (e) => {
         const rawValue = e.target.value;
         const formattedValue = formatDeadlineInput(rawValue);
-        
+
         setInputValue(formattedValue);
 
         const regex = /^(\d{2})\.(\d{2})\.(\d{4})\s+(\d{2}):(\d{2})$/;
@@ -98,9 +97,9 @@ export default function AddTaskModal({ isOpen, onClose, onSave, token }) {
 
         if (match) {
             const [, day, month, year, hours, minutes] = match;
-            
+
             const newDate = new Date(year, month - 1, day);
-            
+
             if (!isNaN(newDate.getTime()) && newDate.getMonth() === parseInt(month) - 1) {
                 setDeadlineDate(newDate);
                 setDeadlineTime(`${hours}:${minutes}`);
@@ -122,7 +121,7 @@ export default function AddTaskModal({ isOpen, onClose, onSave, token }) {
         let isValid = true
 
         if (!title.trim()) {
-            setErrorTitle(t('errorTitleRequired')) // Используем перевод, если есть, или строку
+            setErrorTitle(t('errorTitleRequired'))
             isValid = false
         }
 
@@ -141,10 +140,6 @@ export default function AddTaskModal({ isOpen, onClose, onSave, token }) {
         setIsLoading(true)
 
         try {
-            /* Артём поставил заглушку
-            // --- НАЧАЛО ИЗМЕНЕНИЙ: Имитация ответа сервера ---
-            
-            // 1. Формируем дату для объекта
             let finalDeadline = new Date(deadlineDate)
             if (deadlineTime) {
                 const [hours, minutes] = deadlineTime.split(':').map(Number)
@@ -152,60 +147,52 @@ export default function AddTaskModal({ isOpen, onClose, onSave, token }) {
             }
             const deadlineISO = finalDeadline.toISOString()
 
-            // 2. Создаем фейковый объект задачи, как будто он пришел с бэка
-            // Важно: добавь id, если твой список задач требует уникальный ID для рендеринга
-            const mockNewTask = {
-                id: Date.now(), // Генерируем временный ID
+            const currentUser = getCurrentUser()
+
+            const builtTask = {
+                id: null,
                 title: title,
-                description: description,
+                description: description || null,
                 priority: priority,
                 deadline: deadlineISO,
-                createdAt: new Date().toISOString()
-            };
-
-            // Имитация задержки сети (опционально, для реалистичности)
-            await new Promise(resolve => setTimeout(resolve, 500));
-
-            // 3. Передаем этот объект в onSave, чтобы он появился в списке
-            onSave(mockNewTask);
-            
-            // --- КОНЕЦ ИЗМЕНЕНИЙ ---
-            */
-
-            
-            
-            // ------------МЕРДАН добавил запрос к бэку---------- 
-            // --- НАЧАЛО ИЗМЕНЕНИЙ: Реальный запрос к бэкенду ---
-
-            // 1. Формируем дату для объекта
-            let finalDeadline = new Date(deadlineDate)
-            if (deadlineTime) {
-                const [hours, minutes] = deadlineTime.split(':').map(Number)
-                finalDeadline.setHours(hours, minutes, 0, 0)
+                createdAt: new Date().toISOString(),
+                userId: currentUser?.id ?? currentUser?.userId,
+                teamId: teamId || null,
+                status: 'todo',
             }
-            const deadlineISO = finalDeadline.toISOString()
 
-            // 2. Формируем данные для отправки (PascalCase как в C# модели)
-            const taskData = {
-                Title: title,
-                Description: description,
-                Priority: priority,
-                Deadline: deadlineISO
-            };
+            let responseId
 
-            console.log('Отправляем на бэкенд:', taskData);
+            if (teamId) {
+                const taskData = {
+                    title: title,
+                    description: description || null,
+                    priority: priority,
+                    deadline: deadlineISO,
+                }
+                responseId = await createTeamTask(teamId, taskData)
 
-            // 3. Отправляем POST-запрос на бэкенд
-            // Важно: createTask() в сервисе уже возвращает response.data
-            const createdTask = await createTask(taskData)
+                if (responseId && typeof responseId === 'object') {
+                    builtTask.id = responseId.id ?? responseId.Id ?? responseId
+                } else {
+                    builtTask.id = responseId
+                }
+            } else {
+                const taskData = {
+                    Title: title,
+                    Description: description || null,
+                    Priority: priority,
+                    Deadline: deadlineISO,
+                    UserId: currentUser?.id ?? currentUser?.userId,
+                }
+                responseId = await createTask(taskData)
 
-            console.log('Ответ от сервера:', createdTask)
-
-            // 4. Передаем объект задачи наверх, чтобы обновить список
-            // onSave может быть async (например, чтобы подтянуть свежие данные с бэка)
-            await Promise.resolve(onSave(createdTask))
-
-            // --- КОНЕЦ ИЗМЕНЕНИЙ ---
+                if (responseId && typeof responseId === 'object') {
+                    builtTask.id = responseId.id ?? responseId.Id ?? responseId
+                } else {
+                    builtTask.id = responseId
+                }
+            }
 
             setTitle('')
             setDescription('')
@@ -214,10 +201,14 @@ export default function AddTaskModal({ isOpen, onClose, onSave, token }) {
             setDeadlineTime('12:00')
             setInputValue('')
             setIsCalendarOpen(false)
+
+            if (onSave) {
+                onSave(builtTask)
+            }
             onClose()
         } catch (err) {
-            console.error(err)
-            const errorMessage = err.response?.data?.message || 'Не удалось создать задачу. Попробуйте позже.'
+            console.error('Ошибка создания задачи:', err)
+            const errorMessage = err.response?.data?.message || err.response?.data || err.message || 'Не удалось создать задачу. Попробуйте позже.'
             setServerError(errorMessage)
         } finally {
             setIsLoading(false)
@@ -259,7 +250,7 @@ export default function AddTaskModal({ isOpen, onClose, onSave, token }) {
                             {errorTitle && <span className="error-message">{errorTitle}</span>}
                         </div>
 
-                        <div className="field-wrapper">
+                        <div className="field-wrapper custom-scrollbar">
                             <textarea
                                 placeholder={t('taskDescription')}
                                 value={description}
@@ -316,7 +307,7 @@ export default function AddTaskModal({ isOpen, onClose, onSave, token }) {
 
                         <div className="deadline-selector field-wrapper" ref={calendarRef}>
                             <label className="field-label">{t('deadline')}:</label>
-                            
+
                             <input
                                 type="text"
                                 value={inputValue}
@@ -328,36 +319,36 @@ export default function AddTaskModal({ isOpen, onClose, onSave, token }) {
 
                             {isCalendarOpen && (
                                 <div className="custom-calendar-popover">
-                                    <DateTimePicker 
-                                        selectedDate={deadlineDate} 
+                                    <DateTimePicker
+                                        selectedDate={deadlineDate}
                                         onDateChange={(date) => {
                                             setDeadlineDate(date)
                                             if (errorDeadline) setErrorDeadline('')
-                                        }} 
-                                        selectedTime={deadlineTime} 
-                                        onTimeChange={setDeadlineTime} 
+                                        }}
+                                        selectedTime={deadlineTime}
+                                        onTimeChange={setDeadlineTime}
                                     />
                                 </div>
                             )}
-                            
+
                             {errorDeadline && <span className="error-message">{errorDeadline}</span>}
                         </div>
 
                         <div className="modal-buttons">
-                            <button 
-                                type="button" 
-                                className="btn-cancel" 
+                            <button
+                                type="button"
+                                className="btn-cancel"
                                 onClick={onClose}
                                 disabled={isLoading}
-                                style={{ borderColor: 'rgba(255, 255, 255, 0.3)' }} 
+                                style={{ borderColor: 'rgba(255, 255, 255, 0.3)' }}
                             >
                                 <span className="btn-text">{t('cancel')}</span>
                                 <img src="https://img.icons8.com/?size=96&id=DXECg4JU1n2x&format=png" alt="Cancel" className="btn-icon" />
                                 <div className="btn-bg-slide"></div>
                             </button>
 
-                            <button 
-                                type="submit" 
+                            <button
+                                type="submit"
                                 className="btn-save"
                                 disabled={isLoading}
                             >
@@ -370,6 +361,6 @@ export default function AddTaskModal({ isOpen, onClose, onSave, token }) {
                     </form>
                 </div>
             </div>
-        ) : null 
+        ) : null
     )
 }

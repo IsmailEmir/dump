@@ -11,7 +11,7 @@ public class UserRepository : IUserRepository
 
     public UserRepository(ApplicationDbContext context) => _context = context;
 
-    public async Task<User?> GetByIdAsync(int? id) =>
+    public async Task<User?> GetByIdAsync(int id) =>
         await _context.Users.FirstOrDefaultAsync(u => u.Id == id);
 
     public IQueryable<User> GetAllAsync() =>
@@ -27,7 +27,7 @@ public class UserRepository : IUserRepository
             .Include(u => u.Teams)
             .Include(u => u.LeadingTeams)
             .AsQueryable();
-        
+
         return await query
             .Where(u => u.Username == username || u.RoleId == roleId)
             .ToListAsync();

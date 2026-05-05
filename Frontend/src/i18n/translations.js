@@ -1,7 +1,7 @@
 export const translations = {
   ru: {
     save: "Сохранить",
-    cancel: "Отмена",
+    cancel: "Закрыть",
     delete: "Удалить",
     close: "Закрыть",
     loading: "Загрузка...",
@@ -79,7 +79,7 @@ export const translations = {
 
   en: {
     save: "Save",
-    cancel: "Cancel",
+    cancel: "To close",
     delete: "Delete",
     close: "Close",
     loading: "Loading...",
@@ -156,7 +156,7 @@ export const translations = {
   },
 
   tt: {
-    save: "Саклау",
+    save: "Каплау",
     cancel: "Баш тарту",
     delete: "Бетерү",
     close: "Ябу",
@@ -234,7 +234,7 @@ export const translations = {
   },
 
   tr: {
-    save: "Kaydet",
+    save: "Kapat",
     cancel: "İptal",
     delete: "Sil",
     close: "Kapat",

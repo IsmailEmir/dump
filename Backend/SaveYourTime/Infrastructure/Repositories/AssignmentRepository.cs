@@ -27,11 +27,28 @@ public class AssignmentRepository : IAssignmentRepository
 
     public IQueryable<Assignment> GetByFilterAsync(int userId, string filter)
     {
-        return  _context.Assignments
+        var query = _context.Assignments
             .Include(a => a.User)
             .Include(a => a.Status)
             .Include(a => a.Priority)
             .AsQueryable();
+
+        query = query.Where(a => a.UserId == userId);
+
+        if (string.IsNullOrWhiteSpace(filter))
+            return query;
+
+        var f = filter.Trim().ToLowerInvariant();
+
+        // Полнотекстового поиска тут нет — делаем простой, но полезный матч:
+        // - Title/Description содержит строку
+        // - или точное совпадение по имени статуса/приоритета
+        return query.Where(a =>
+            a.Title.ToLower().Contains(f) ||
+            (a.Description != null && a.Description.ToLower().Contains(f)) ||
+            a.Status.Name.ToLower() == f ||
+            a.Priority.Name.ToLower() == f
+        );
     }
 
     public async Task CreateAsync(Assignment assignment)

@@ -4,7 +4,9 @@ public record TeamResponse(
     int Id,
     string Name,
     string? Description,
+    string? AvatarUrl,
     int? LeaderId,
     string? LeaderName,
-    DateTime CreatedAt
+    DateTime CreatedAt,
+    List<UserResponse>? Members = null
 );
