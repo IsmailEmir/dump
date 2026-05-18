@@ -1,0 +1,1839 @@
+.team-list-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    backdrop-filter: blur(5px);
+}
+
+.team-list-content {
+    background-color: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    padding: 15px;
+    gap: 30px;
+    border-radius: 20px;
+    width: 500px;
+    max-width: 90%;
+    max-height: 80vh;
+    display: flex;
+    flex-direction: column;
+    color: white;
+    font-family: 'Nunito', monospace;
+}
+
+.team-list-content header {
+    margin: 0;
+    font-family: 'Nunito', monospace;
+    text-align: center;
+    font-size: 20px;
+    flex-grow: 1;
+    margin-top: 5px;
+}
+
+.teams-scroll-container {
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 100%;
+    box-sizing: border-box;
+}
+.empty-message {
+    text-align: center;
+    color: rgba(255, 255, 255, 0.5);
+    font-style: italic;
+}
+
+.team-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 10px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.05);
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.team-item:hover {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.team-item-logo {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.team-item-logo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.team-item-name {
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.list-actions-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+.btn-create-team-small {
+    position: relative;
+    overflow: hidden;
+    height: 41px;
+    padding: 0 16px;
+    border-radius: 12px;
+    z-index: 3;
+    background-color: transparent !important;
+    border: rgba(255, 255, 255, 0.2) solid 2px;
+    color: white;
+    font-weight: 600;
+    font-family: 'Nunito', monospace;
+    font-size: 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: border-color 0.3s ease;
+    width: 80%;
+    max-width: 250px;
+    will-change: transform;
+}
+
+.btn-create-team-small .btn-bg-slide {
+    background-color: #4a90e2;
+}
+
+.btn-create-team-small:hover {
+    border-color: #4a90e2;
+}
+
+.btn-create-team-small:hover .btn-bg-slide { transform: scaleX(1); }
+.btn-create-team-small:hover .btn-text { transform: translateX(-150%); opacity: 0; }
+.btn-create-team-small:hover .btn-icon { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+
+.create-team-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    backdrop-filter: blur(5px);
+}
+
+.create-team-modal-content {
+    background-color: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    border-radius: 20px;
+    padding: 15px !important;
+    width: 400px;
+    max-width: 90%;
+    display: flex;
+    flex-direction: column;
+    color: white;
+    font-family: 'Nunito', monospace;
+}
+
+.create-team-modal-content header {
+    margin: 0;
+    font-family: 'Nunito', monospace;
+    text-align: center;
+    font-size: 20px;
+    flex-grow: 1;
+    margin-top: 5px;
+}
+
+
+.team-profile-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    backdrop-filter: blur(5px);
+}
+
+.team-profile-content {
+    background-color: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    padding: 17px;
+    border-radius: 20px;
+    width: 450px;
+    max-width: 90%;
+    min-height: 200px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+    color: white;
+    font-family: 'Nunito', monospace;
+}
+
+.team-header-info {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    width: 100%;
+    justify-content: center;
+}
+
+.team-logo-container {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    overflow: hidden;
+    background-color: rgba(255, 255, 255, 0.1);
+    flex-shrink: 0;
+    box-shadow: 0 0 20px rgba(0,0,0,0.3);
+    position: relative;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.team-logo-container.editable-avatar:hover {
+    transform: scale(1.05);
+}
+
+.team-logo-container.editable-avatar::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0);
+    border-radius: 50%;
+    transition: background 0.3s ease;
+}
+
+.team-logo-container.editable-avatar:hover::after {
+    background: rgba(0, 0, 0, 0.5);
+}
+
+.team-logo-container.editable-avatar::before {
+    content: '';
+    position: absolute;
+    width: 32px;
+    height: 32px;
+    background-image: url('https://img.icons8.com/?size=96&id=TGKHLKPBB4J8&format=png');
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    z-index: 10;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.team-logo-container.editable-avatar:hover::before {
+    opacity: 1;
+}
+
+.team-logo-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    background-color: transparent;
+}
+
+.team-name-title {
+    font-size: 18px;
+    font-weight: 700;
+    margin: 0;
+    cursor: default;
+}
+
+.team-name-title.editable-name {
+    cursor: pointer;
+    position: relative;
+    transition: all 0.3s ease;
+    display: inline-block;
+}
+
+.team-name-title.editable-name .name-text-wrapper {
+    display: inline-block;
+    transition: filter 0.3s ease;
+}
+
+.team-name-title.editable-name:hover .name-text-wrapper {
+    filter: blur(4px);
+}
+
+.team-name-title.editable-name .edit-button-overlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(0, 0, 0, 0.7);
+    padding: 8px 32px 8px 16px;
+    border-radius: 8px;
+    color: white;
+    font-family: 'Nunito', monospace;
+    font-size: 14px;
+    font-weight: 600;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+    white-space: nowrap;
+    z-index: 10;
+}
+
+.team-name-title.editable-name:hover .edit-button-overlay {
+    opacity: 1;
+}
+
+.team-name-title.editable-name .edit-button-overlay img {
+    width: 16px;
+    height: 16px;
+}
+
+.team-name-edit-container {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: center;
+}
+
+.team-name-edit-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.team-name-edit-input {
+    background: transparent;
+    border: none;
+    outline: none;
+    color: white;
+    font-family: 'Nunito', monospace;
+    font-size: 16px;
+    font-weight: 600;
+    width: 200px;
+}
+
+.team-name-edit-input::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.team-name-edit-buttons {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+}
+
+.team-name-cancel-btn-red {
+    background: #B44C43;
+    border: none;
+    color: white;
+    font-family: 'Nunito', monospace;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 8px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.team-name-cancel-btn-red:hover {
+    background: #d9534f;
+}
+
+.team-name-cancel-btn-red:disabled {
+    background: rgba(255, 255, 255, 0.2);
+    cursor: not-allowed;
+}
+
+.team-name-save-btn {
+    background: #098765;
+    border: none;
+    color: white;
+    font-family: 'Nunito', monospace;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 8px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.team-name-save-btn:hover {
+    background: #0a9f7a;
+}
+
+.team-name-save-btn:disabled {
+    background: rgba(255, 255, 255, 0.2);
+    cursor: not-allowed;
+}
+
+.team-stats-placeholder {
+    width: 100%;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 15px;
+    text-align: center;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.profile-actions-container {
+    display: flex;
+    gap: 15px;
+    width: 100%;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+
+.team-tasks-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    backdrop-filter: blur(8px);
+}
+
+.team-tasks-content {
+    background-color: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    padding: 24px;
+    border-radius: 20px;
+    width: 85vw;
+    height: 92vh;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    color: white;
+    font-family: 'Nunito', monospace;
+    position: relative;
+}
+
+.tasks-header {
+    text-align: center;
+    margin-bottom: 10px;
+    flex-shrink: 0;
+}
+
+.tasks-header header {
+    margin: 0;
+    font-family: 'Nunito', monospace;
+    text-align: center;
+    font-size: 20px;
+    flex-grow: 1;
+    margin-top: 5px;
+}
+
+.team-name-subtitle {
+    font-size: 16px;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.kanban-board {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    padding-bottom: 15px;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+}
+
+.kanban-column {
+    flex: 1;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 15px;
+    padding: 20px 0 0 20px;
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.kanban-column:last-child {
+    border-right: none;
+}
+
+.column-header {
+    font-weight: 400;
+    margin-bottom: 15px;
+    text-align: center;
+    padding-bottom: 15px;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+    font-size: 18px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    flex-shrink: 0;
+    padding-right: 20px;
+}
+
+.column-tasks {
+    flex: 1;
+    overflow-y: auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    padding-right: 0 !important;
+    padding-top: 0 !important;
+    padding-left: 0 !important;
+}
+
+.tasks-actions-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 15px;
+    flex-shrink: 0;
+}
+
+.btn-add-task-icon-only {
+    width: 24px;
+    height: 24px;
+    background: transparent !important;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.task-icon-img {
+    width: 42px;
+    height: 42px;
+    filter: brightness(0) invert(1);
+    opacity: 0.8;
+    transition: opacity 0.3s;
+}
+
+.btn-add-task-icon-only:hover {
+    transform: translateY(-8px);
+}
+
+.btn-add-task-icon-only:hover .task-icon-img {
+    opacity: 1;
+}
+
+.team-tasks-layout {
+    display: flex;
+    height: 100%;
+    gap: 20px;
+    margin-top: 20px;
+    overflow: hidden;
+}
+
+.team-nav-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 220px;
+    flex-shrink: 0;
+    justify-content: flex-start;
+    padding-top: 0;
+    height: auto;
+}
+
+.team-nav-btn {
+    position: relative;
+    overflow: hidden;
+    height: 46px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: white;
+    font-family: 'Nunito', monospace;
+    font-size: 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    padding-left: 15px;
+    transition: border-color 0.3s ease;
+    text-align: left;
+    background-color: transparent !important;
+    margin-top: 2px;
+}
+
+.team-nav-btn:hover {
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+.team-nav-btn.active {
+    border-color: #4a90e2;
+    background: rgba(74, 144, 226, 0.1);
+}
+
+.nav-icon {
+    width: 24px;
+    height: 24px;
+    margin-right: 15px;
+    filter: brightness(0) invert(1);
+    opacity: 0.8;
+    z-index: 2;
+}
+
+.nav-text {
+    position: relative;
+    z-index: 2;
+    font-weight: 600;
+}
+
+.nav-bg-slide {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    background-color: #4a90e2;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.35s ease-out;
+    will-change: transform;
+}
+
+.team-nav-btn:hover .nav-bg-slide,
+.team-nav-btn.active .nav-bg-slide {
+    transform: scaleX(1);
+}
+
+.team-tasks-area {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding-right: 10px;
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    background: rgba(0, 0, 0, 0.1);
+}
+
+.tasks-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 15px;
+    align-content: start;
+}
+
+.empty-state {
+    text-align: center;
+    color: rgba(255, 255, 255, 0.5);
+    font-style: italic;
+    margin-top: 50px;
+}
+
+.tasks-actions-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 15px;
+    flex-shrink: 0;
+}
+
+.btn-add-task-icon-only {
+    width: 20px;
+    height: 20px;
+    background: transparent !important;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.task-icon-img {
+    width: 42px;
+    height: 42px;
+    filter: brightness(0) invert(1);
+    opacity: 0.8;
+    transition: opacity 0.3s;
+}
+
+.btn-add-task-icon-only:hover {
+    transform: translateY(-8px);
+}
+
+.btn-add-task-icon-only:hover .task-icon-img {
+    opacity: 1;
+}
+
+.team-tasks-layout {
+    display: flex;
+    height: 100%;
+    gap: 20px;
+    margin-top: 20px;
+    overflow: hidden;
+
+}
+
+.team-nav-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 220px;
+    flex-shrink: 0;
+}
+
+.team-nav-btn {
+    position: relative;
+    overflow: hidden;
+    height: 46px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: white;
+    font-family: 'Nunito', monospace;
+    font-size: 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    padding-left: 15px;
+    transition: border-color 0.3s ease;
+    text-align: left;
+    background-color: transparent !important;
+}
+
+.team-nav-btn:hover {
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+.team-nav-btn.active {
+    border-color: #4a90e2;
+    background: rgba(74, 144, 226, 0.1);
+}
+
+.nav-text {
+    position: relative;
+    z-index: 2;
+    font-weight: 600;
+}
+
+.nav-bg-slide {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    background-color: #4a90e2;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.35s ease-out;
+    will-change: transform;
+}
+
+.team-nav-btn:hover .nav-bg-slide,
+.team-nav-btn.active .nav-bg-slide {
+    transform: scaleX(1);
+}
+
+.team-tasks-area {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding-right: 10px;
+    display: flex;
+    flex-direction: column;
+    align-content: flex-start;
+}
+
+.tasks-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    align-content: flex-start;
+    width: 100%;
+}
+
+.empty-state {
+    text-align: center;
+    color: rgba(255, 255, 255, 0.5);
+    font-style: italic;
+    margin-top: 50px;
+}
+
+.tasks-actions-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 15px;
+    flex-shrink: 0;
+}
+
+.btn-add-task-nav {
+    margin-top: 10px;
+    border-color: rgba(9, 135, 101, 0.3);
+}
+
+.btn-add-task-nav:hover {
+    border-color: #098765;
+}
+
+
+.nav-bg-slide.green-bg {
+    background-color: #098765;
+}
+
+.btn-add-task-nav.active {
+    background: rgba(9, 135, 101, 0.1);
+    border-color: #098765;
+}
+
+
+.team-task-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 10px;
+    width: 100%;
+    margin-top: -6px !important;
+}
+
+.team-action-btn {
+    width: 90px;
+    height: 25px !important;
+    padding: 0px;
+    margin-top: -5px !important;
+    margin-bottom: 5px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.05);
+    color: white;
+    font-family: 'Nunito', monospace;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.team-action-btn:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.4);
+}
+
+/* Кнопки Закрыть/Переоткрыть задачи */
+.task-action-buttons {
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    margin-bottom: 8px;
+}
+
+.close-task-btn,
+.reopen-task-btn {
+    width: 90px;
+    height: 25px;
+    padding: 0;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.05);
+    color: white;
+    font-family: 'Nunito', monospace;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.close-task-btn:hover,
+.reopen-task-btn:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.4);
+}
+
+.team-task-card .task-middle-row {
+    margin-bottom: 5px;
+}
+
+.btn-add-task-nav {
+    margin-top: 10px;
+    border-color: rgba(9, 135, 101, 0.3);
+}
+
+.btn-add-task-nav:hover {
+    border-color: #098765;
+}
+
+.nav-bg-slide.green-bg {
+    background-color: #098765;
+}
+
+.btn-add-task-nav.active {
+    background: rgba(9, 135, 101, 0.1);
+    border-color: #098765;
+}
+
+.desc-modal-content {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 20px !important;
+    max-height: 85vh !important;
+    overflow-y: auto !important;
+}
+
+.task-details-wrapper {
+    display: flex;
+    gap: 20px;
+    width: 100%;
+}
+
+.task-details-main {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.task-details-sidebar {
+    width: 220px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.detail-section-label {
+    font-family: 'Nunito', monospace;
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.6);
+    margin-bottom: 8px;
+    display: block;
+}
+
+.task-description-box {
+    background: rgba(0, 0, 0, 0.2);
+    padding: 15px;
+    border-radius: 10px;
+    font-family: 'Nunito', monospace;
+    font-size: 14px;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.9);
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    max-height: 300px;
+    overflow-y: auto;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.sidebar-info-block {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 15px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.info-label {
+    font-family: 'Nunito', monospace;
+    font-size: 11px;
+    color: rgb(154, 154, 154);
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.info-value {
+    font-family: 'Nunito', monospace;
+    font-size: 14px;
+    color: white;
+    font-weight: 500;
+}
+
+.priority-display {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.priority-indicator {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    box-shadow: 0 0 8px currentColor;
+}
+
+.task-dates-block {
+    background: rgba(0, 0, 0, 0.15);
+    padding: 15px 20px;
+    border-radius: 10px;
+    display: flex;
+    gap: 30px;
+    flex-wrap: wrap;
+}
+
+.date-display {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.date-label-text {
+    font-family: 'Nunito', monospace;
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.date-text {
+    font-family: 'Nunito', monospace;
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.9);
+    font-weight: 500;
+}
+
+.desc-modal-buttons {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+@media (max-width: 768px) {
+    .task-details-wrapper {
+        flex-direction: column;
+    }
+
+    .task-details-sidebar {
+        width: 100%;
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+
+    .sidebar-info-block {
+        flex: 1;
+        min-width: 150px;
+    }
+
+    .task-dates-block {
+        flex-direction: column;
+        gap: 12px;
+    }
+}
+
+.desc-modal-content {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 20px !important;
+    max-height: 85vh !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+}
+
+/* 🔥 СВЕТЛАЯ ТЕМА ДЛЯ ВСЕХ МОДАЛОК КОМАНД */
+[data-theme="light"] .team-list-content,
+[data-theme="light"] .create-team-modal-content,
+[data-theme="light"] .team-profile-content,
+[data-theme="light"] .team-tasks-content {
+    background-color: rgba(255, 255, 255, 0.6);
+    border-color: rgba(0, 0, 0, 0.1);
+    color: #1a1a1a;
+}
+
+[data-theme="light"] .team-item {
+    background: rgba(0, 0, 0, 0.03);
+}
+
+[data-theme="light"] .team-item:hover {
+    background: rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="light"] .empty-message {
+    color: rgba(0, 0, 0, 0.5);
+}
+
+[data-theme="light"] .btn-create-team-small,
+[data-theme="light"] .btn-secondary,
+[data-theme="light"] .team-nav-btn,
+[data-theme="light"] .team-action-btn {
+    color: #1a1a1a;
+    border-color: rgba(0, 0, 0, 0.15);
+}
+
+[data-theme="light"] .btn-create-team-small:hover,
+[data-theme="light"] .btn-secondary:hover,
+[data-theme="light"] .team-nav-btn:hover,
+[data-theme="light"] .team-action-btn:hover {
+    border-color: #4a90e2;
+}
+
+[data-theme="light"] .team-item-name,
+[data-theme="light"] .team-name-title,
+[data-theme="light"] .nav-text {
+    color: #1a1a1a;
+}
+
+[data-theme="light"] .task-icon-img,
+[data-theme="light"] .nav-icon {
+    filter: brightness(0) invert(0);
+}
+
+[data-theme="light"] .kanban-column {
+    background: rgba(0, 0, 0, 0.05);
+}
+
+[data-theme="light"] .column-header {
+    border-bottom-color: rgba(0, 0, 0, 0.1);
+    color: #1a1a1a;
+}
+
+[data-theme="light"] .team-stats-placeholder {
+    background: rgba(0, 0, 0, 0.05);
+    color: rgba(0, 0, 0, 0.7);
+}
+
+[data-theme="light"] .team-tasks-area {
+    background: rgba(0, 0, 0, 0.03);
+    border-color: rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="light"] .info-label,
+[data-theme="light"] .date-label,
+[data-theme="light"] .detail-section-label,
+[data-theme="light"] .section-label-text,
+[data-theme="light"] .info-block-label,
+[data-theme="light"] .date-label-text {
+    color: rgba(0, 0, 0, 0.5);
+}
+
+[data-theme="light"] .info-value,
+[data-theme="light"] .date-text,
+[data-theme="light"] .info-block-value,
+[data-theme="light"] .date-value,
+[data-theme="light"] .priority-text,
+[data-theme="light"] .task-description-content {
+    color: #1a1a1a;
+}
+
+[data-theme="light"] .task-description-box,
+[data-theme="light"] .sidebar-info-block,
+[data-theme="light"] .task-dates-block,
+[data-theme="light"] .info-block,
+[data-theme="light"] .task-dates-wrapper {
+    background: rgba(0, 0, 0, 0.05);
+    border-color: rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="light"] .empty-state {
+    color: rgba(0, 0, 0, 0.5);
+}
+
+[data-theme="light"] .add-member-modal-content,
+[data-theme="light"] .add-member-modal-content {
+    background-color: rgba(255, 255, 255, 0.85);
+    border-color: rgba(0, 0, 0, 0.1);
+    color: #1a1a1a;
+}
+
+[data-theme="light"] .add-member-input,
+[data-theme="light"] .create-team-input {
+    background: rgba(0, 0, 0, 0.05);
+    color: #1a1a1a;
+}
+
+[data-theme="light"] .add-member-input:focus,
+[data-theme="light"] .create-team-input:focus {
+    background: rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="light"] .add-member-input::placeholder,
+[data-theme="light"] .create-team-input::placeholder {
+    color: rgba(0, 0, 0, 0.4);
+}
+
+[data-theme="light"] .create-team-modal-content {
+    background-color: rgba(255, 255, 255, 0.6);
+    border-color: rgba(0, 0, 0, 0.1);
+    color: #1a1a1a;
+}
+
+.task-details-container {
+    display: flex;
+    gap: 20px;
+    width: 100%;
+    align-items: flex-start;
+}
+
+.task-description-section {
+    flex: 1;
+    min-width: 0;
+}
+
+.task-info-section {
+    width: 200px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.section-label-text {
+    font-family: 'Nunito', monospace;
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.6);
+    margin-bottom: 10px;
+    display: block;
+}
+
+.task-description-content {
+    background: rgba(0, 0, 0, 0.2);
+    padding: 15px;
+    border-radius: 10px;
+    font-family: 'Nunito', monospace;
+    font-size: 14px;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.9);
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    max-height: 250px;
+    overflow-y: auto;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.info-block {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 12px 15px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.info-block-label {
+    font-family: 'Nunito', monospace;
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.5);
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.info-block-value {
+    font-family: 'Nunito', monospace;
+    font-size: 14px;
+    color: white;
+    font-weight: 500;
+}
+
+.priority-indicator-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.priority-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    box-shadow: 0 0 8px currentColor;
+}
+
+.priority-text {
+    font-family: 'Nunito', monospace;
+    font-size: 14px;
+    color: white;
+    font-weight: 500;
+}
+
+.task-dates-wrapper {
+    background: rgba(0, 0, 0, 0.15);
+    padding: 15px 20px;
+    border-radius: 10px;
+    display: flex;
+    gap: 30px;
+    flex-wrap: wrap;
+}
+
+.date-info {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.date-label {
+    font-family: 'Nunito', monospace;
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.date-value {
+    font-family: 'Nunito', monospace;
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.9);
+    font-weight: 500;
+}
+
+.desc-modal-buttons {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+@media (max-width: 768px) {
+    .task-details-container {
+        flex-direction: column;
+    }
+
+    .task-info-section {
+        width: 100%;
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+
+    .info-block {
+        flex: 1;
+        min-width: 150px;
+    }
+
+    .task-dates-wrapper {
+        flex-direction: column;
+        gap: 12px;
+    }
+}
+
+
+.add-member-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    backdrop-filter: blur(5px);
+    opacity: 0;
+    animation: fadeInOverlay 0.3s ease forwards;
+}
+
+@keyframes fadeInOverlay {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.add-member-modal-content {
+    background-color: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    padding: 15px;
+    border-radius: 20px;
+    width: 400px;
+    max-width: 90%;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    color: white;
+    font-family: 'Nunito', monospace;
+    position: relative;
+    transform: scale(0.9);
+    opacity: 0;
+    animation: fadeInContent 0.3s ease forwards 0.1s;
+}
+
+@keyframes fadeInContent {
+    from {
+        opacity: 0;
+        transform: scale(0.9) translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+.add-member-modal-content header {
+    margin: 0;
+    font-family: 'Nunito', monospace;
+    text-align: center;
+    font-size: 20px;
+    flex-grow: 1;
+    margin-top: 5px;
+}
+
+.add-member-input {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    font-weight: 200;
+    font-family: 'Nunito', monospace;
+    font-size: 14px;
+    box-sizing: border-box;
+    outline: none;
+    transition: background 0.3s;
+}
+
+.add-member-input:focus {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.add-member-input::placeholder {
+    color: rgba(255, 255, 255, 0.3);
+}
+
+.add-member-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+    justify-content: center;
+}
+
+
+
+.create-team-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    backdrop-filter: blur(5px);
+}
+
+.create-team-modal-content {
+    background-color: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    padding: 15px !important;
+    border-radius: 20px;
+    width: 400px;
+    max-width: 90%;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    color: white;
+    font-family: 'Nunito', monospace;
+    position: relative;
+}
+
+.create-team-modal-content header {
+    margin: 0;
+    font-family: 'Nunito', monospace;
+    text-align: center;
+    font-size: 20px;
+    flex-grow: 1;
+    margin-top: 5px;
+}
+
+.team-avatar-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    margin: 10px 0;
+}
+
+.team-avatar-circle {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.15);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(10px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    position: relative;
+    cursor: pointer;
+    transition: border-color 0.3s ease, transform 0.3s ease;
+    margin-bottom: 15px;
+}
+
+.team-avatar-circle img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.avatar-upload-icon {
+    width: 32px;
+    height: 32px;
+    filter: brightness(0) invert(1);
+    opacity: 0.6;
+    transition: opacity 0.3s ease;
+}
+
+.team-avatar-circle::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 32px;
+    height: 32px;
+    background-image: url('https://img.icons8.com/?size=96&id=TGKHLKPBB4J8&format=png');
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    z-index: 10;
+    opacity: 0 !important;
+    transition: opacity 0.3s ease;
+    filter: brightness(0) invert(1);
+}
+
+.team-avatar-circle::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0);
+    border-radius: 50%;
+    transition: background 0.3s ease;
+    z-index: 5;
+}
+
+.team-avatar-circle:hover::before {
+    opacity: 1 !important;
+}
+
+.team-avatar-circle:hover::after {
+    background: rgba(0, 0, 0, 0.5);
+}
+
+.team-avatar-circle:hover {
+    border-color: rgba(255, 255, 255, 0.5);
+    transform: scale(1.05);
+}
+
+.team-avatar-circle:hover .avatar-upload-icon {
+    opacity: 0;
+}
+
+.avatar-hint {
+    margin: 0;
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.5);
+    text-align: center;
+}
+
+.avatar-loading {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.7);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 20;
+    overflow: hidden;
+}
+
+.loading-text {
+    font-family: 'Nunito', monospace;
+    font-size: 10px;
+    color: white;
+}
+
+.upload-progress {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 100%;
+    background: linear-gradient(to top, rgba(0, 200, 100, 0.5), rgba(0, 200, 100, 0.2));
+    transition: width 0.1s ease;
+    border-radius: 50%;
+}
+
+.progress-text {
+    font-family: "Nunito", monospace;
+    font-size: 12px;
+    font-weight: bold;
+    color: white;
+    z-index: 25;
+    text-shadow: 0 0 5px rgba(0,0,0,0.5);
+}
+
+.create-team-input {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    font-weight: 200;
+    font-family: 'Nunito', monospace;
+    font-size: 14px;
+    box-sizing: border-box;
+    outline: none;
+    transition: background 0.3s;
+    margin-bottom: 10px;
+}
+
+.create-team-input:focus {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.create-team-input::placeholder {
+    color: rgba(255, 255, 255, 0.3);
+}
+
+.modal-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+    justify-content: center;
+}
+
+.team-members-modal header
+{
+    margin-top: 5px;
+}
+
+/* Стили для карточки участника команды */
+.member-card {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 12px 15px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: background 0.2s ease, border-color 0.2s ease;
+    margin-bottom: 10px;
+}
+
+.member-card:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.member-avatar {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    overflow: hidden;
+    flex-shrink: 0;
+    background: rgba(255, 255, 255, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.member-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.member-avatar span {
+    font-size: 18px;
+    font-weight: 600;
+    color: white;
+    text-transform: uppercase;
+}
+
+.member-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.member-name {
+    font-family: 'Nunito', monospace;
+    font-size: 15px;
+    font-weight: 600;
+    color: white;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.member-role {
+    font-family: 'Nunito', monospace;
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.6);
+    margin-top: 2px;
+}
+
+.members-list {
+    max-height: 300px;
+    overflow-y: auto;
+    padding-right: 15px;
+}
+/* Стили для валидации поля ввода ID пользователя */
+.input-error {
+    border: 1px solid #ff5252 !important;
+    background: rgba(255, 82, 82, 0.1) !important;
+}
+
+.input-success {
+    border: 1px solid #44ff44 !important;
+    background: rgba(68, 255, 68, 0.1) !important;
+}
+
+.input-warning {
+    border: 1px solid #ffcc00 !important;
+    background: rgba(255, 204, 0, 0.1) !important;
+}
+
+.error-message {
+    display: block;
+    color: #ff4444;
+    font-size: 12px;
+    font-family: 'Nunito', monospace;
+    margin: 0;
+    padding-left: 2px;
+    padding-top: 4px;
+    text-align: center;
+    animation: fadeIn 0.3s ease;
+}
+
+.success-message {
+    display: block;
+    color: #44ff44;
+    font-size: 12px;
+    font-family: 'Nunito', monospace;
+    margin: 0;
+    padding-left: 2px;
+    padding-top: 4px;
+    text-align: center;
+    animation: fadeIn 0.3s ease;
+}
+
+.warning-message {
+    display: block;
+    color: #ffcc00;
+    font-size: 12px;
+    font-family: 'Nunito', monospace;
+    margin: 0;
+    padding-left: 2px;
+    padding-top: 4px;
+    text-align: center;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.leader-crown-icon {
+    position: absolute;
+    top: 10px;
+    right: 50px;
+    width: 32px;
+    height: 32px;
+    opacity: 0.8;
+    pointer-events: none;
+}
+
+/* Стили для кнопки удаления команды */
+.delete-team-btn {
+    position: absolute;
+    top: 50px;
+    right: 50px;
+}
+
+.icon-btn-micro {
+    background: transparent !important;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 10px;
+    height: 20px;
+    opacity: 0.6;
+    transition: transform 0.2s, opacity 0.2s;
+    align-self: flex-end;
+    margin-right: 12px;
+}
+
+.icon-btn-micro:hover {
+    transform: scale(1.2);
+    opacity: 1;
+}
+
+.icon-btn-micro img {
+    width: 15px;
+    height: 15px;
+    filter: brightness(0) invert(1);
+}
+
+.leader-icons-container {
+    position: absolute;
+    left: -5px;
+    right: auto;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10;
+
+    width: 40px;
+    height: 25px;
+    background-color: rgba(1, 1, 1, 0.1);
+    border-radius: 12px;
+
+
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    align-items: flex-end;
+    justify-content: center;
+}
+
+.team-description-panel {
+    background-color: rgba(1, 1, 1, 0.1);
+    border-radius: 12px;
+    padding: 12px;
+    margin-top: 20px;
+    margin-left: 0%;
+    max-height: 200px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    width: 80%;
+
+
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    word-break: break-word;
+}

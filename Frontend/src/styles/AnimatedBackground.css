@@ -1,0 +1,64 @@
+.animated-bg-waves {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0; /* Чтобы был позади контента */
+    overflow: hidden;
+    background-color: var(--animated-bg-base);
+    transition: background-color 0.4s ease;
+}
+
+/* Theme tokens */
+:root {
+    --animated-bg-base: #222222;
+    --animated-wave-1: rgba(119, 119, 119, 0.2);
+    --animated-wave-2: rgba(102, 102, 102, 0.2);
+    --animated-wave-3: rgba(85, 85, 85, 0.2);
+}
+
+html[data-theme="light"],
+body[data-theme="light"] {
+    --animated-bg-base: #f1f5f9;
+    --animated-wave-1: rgba(180, 190, 220, 0.15);
+    --animated-wave-2: rgba(160, 170, 200, 0.12);
+    --animated-wave-3: rgba(140, 150, 180, 0.1);
+}
+
+/* Сами волны */
+.wave {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 200%;
+    height: 20em;
+    background: var(--animated-wave-1);
+    border-radius: 1000% 1000% 0 0;
+    animation: waveMove 10s -3s linear infinite;
+    opacity: 0.6;
+    transition: background 0.4s ease;
+}
+
+.wave:nth-of-type(2) {
+    bottom: -1.5em;
+    animation-duration: 18s;
+    animation-direction: reverse;
+    opacity: 0.4;
+    background: var(--animated-wave-2);
+}
+
+.wave:nth-of-type(3) {
+    bottom: -3em;
+    animation-duration: 20s;
+    animation-delay: -2s;
+    opacity: 0.3;
+    background: var(--animated-wave-3);
+}
+
+/* Ключевые кадры анимации */
+@keyframes waveMove {
+    0% { transform: translateX(0); }
+    50% { transform: translateX(-25%); }
+    100% { transform: translateX(0); }
+}

@@ -1,0 +1,1122 @@
+.task-card {
+    width: auto;
+    height: auto;
+    min-width: 180px;
+    max-width: 100%;
+    min-height: 120px;
+    overflow: visible;
+    padding: 10px;
+    box-sizing: border-box;
+    background-color: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    color: white;
+    position: relative;
+    z-index: 1;
+    transition: none;
+    margin: 0;
+    flex-grow: 0;
+    flex-shrink: 0;
+    overflow: visible;
+    max-height: none;
+    border-radius: 15px !important;
+}
+
+.task-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    width: 100%;
+    flex-shrink: 0;
+    margin-bottom: 8px;
+    gap: 5px;
+}
+
+.task-header h3 {
+    margin: 0;
+    font-family: 'Nunito', monospace;
+    font-size: 14px;
+    font-weight: 600;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    line-height: 1.3;
+    white-space: normal;
+    display: -webkit-box;
+    line-clamp: 2;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    max-width: calc(100% - 20px);
+    flex: 1;
+    min-width: 0;
+}
+
+.priority-badge {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    box-shadow: 0 0 8px currentColor;
+    margin-top: 4px;
+}
+
+.task-middle-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    width: 100%;
+    flex-shrink: 0;
+}
+
+.btn-simple-zoom {
+    width: 90px !important;
+    height: 25px;
+    padding: 0 !important;
+    font-size: 9px !important;
+    line-height: 18px !important;
+    text-align: center;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: white;
+    font-family: 'Nunito', monospace;
+    font-weight: 600;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: transform 0.2s ease-out;
+    margin-top: 7px;
+    flex-shrink: 0;
+}
+
+.btn-simple-zoom:hover {
+    transform: scale(1.03);
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.task-actions-vertical {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.icon-btn-micro {
+    background: transparent !important;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    opacity: 0.6;
+    transition: transform 0.2s, opacity 0.2s;
+}
+
+.icon-btn-micro:hover {
+    transform: scale(1.2);
+    opacity: 1;
+}
+
+.icon-btn-micro img {
+    width: 15px;
+    height: 15px;
+    filter: brightness(0) invert(1);
+}
+
+.task-footer-dates {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding-top: 6px;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    flex-shrink: 0;
+    margin-top: auto;
+}
+
+.date-row {
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.task-date-label {
+    font-family: 'Nunito', monospace !important;
+    font-size: 10px !important;
+    font-weight: 400 !important;
+    color: rgba(255, 255, 255, 0.6) !important;
+    white-space: nowrap;
+}
+
+.date-value {
+    font-family: 'Nunito', monospace !important;
+    font-size: 10px !important;
+    font-weight: 400 !important;
+    color: rgba(255, 255, 255, 0.9) !important;
+    word-break: break-all;
+}
+
+.field-wrapper {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.input-with-counter {
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden !important;
+    overflow-y: visible;
+}
+
+.char-counter {
+    font-family: 'Nunito', monospace;
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.7);
+    pointer-events: none;
+    transition: color 0.3s ease;
+    text-align: right;
+    padding-right: 2px;
+    margin-top: 4px;
+    overflow: visible;
+    white-space: nowrap;
+    display: inline-block;
+    min-width: 0;
+    position: relative;
+    z-index: 1;
+}
+
+.char-counter-error {
+    color: #ff5252 !important;
+}
+
+@keyframes shakeCounter {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+}
+
+.char-counter.shake {
+    animation: shakeCounter 0.3s ease-in-out;
+}
+
+.modal-content input[type="text"],
+.modal-content textarea,
+.modal-content input[type="datetime-local"] {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.2);
+    color: white !important;
+    font-weight: 200;
+    font-family: 'Nunito', monospace;
+    font-size: 15px;
+    box-sizing: border-box;
+    outline: none;
+    transition: background 0.3s;
+    margin: 0;
+    height: 45px;
+}
+
+.modal-content textarea {
+    min-height: 100px !important;
+    max-height: 210px;
+    resize: vertical !important;
+    overflow-y: auto;
+    display: block;
+    position: relative;
+}
+
+.modal-content input:focus,
+.modal-content textarea:focus {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.modal-content input::placeholder,
+.modal-content textarea::placeholder {
+    color: rgba(255, 255, 255, 0.7) !important;
+    opacity: 1;
+    font-weight: 200;
+    font-family: 'Nunito', monospace;
+    font-size: 15px;
+}
+
+.input-error {
+    border: 1px solid #ff5252 !important;
+    background: rgba(255, 82, 82, 0.1) !important;
+}
+
+.error-message {
+    display: block;
+    color: #ff5252;
+    font-size: 12px;
+    font-family: 'Nunito', monospace;
+    margin: 0;
+    padding-left: 2px;
+    padding-top: 4px;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.priority-selector {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin: 0;
+}
+
+.field-label {
+    font-family: 'Nunito', monospace;
+    font-size: 14px;
+    opacity: 0.9;
+    margin-top: 8px;
+    display: block;
+    padding-left: 2px;
+    margin-bottom: 4px;
+}
+
+.priority-options-row {
+    display: flex;
+    gap: 10px;
+    justify-content: space-between;
+}
+
+.priority-text-btn {
+    flex: 1;
+    padding: 12px 5px;
+    border-radius: 13px;
+    background: transparent;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 38px;
+}
+
+.btn-text-inner {
+    position: relative;
+    z-index: 2;
+    font-family: 'Nunito', monospace;
+    font-size: 15px;
+    font-weight: 400;
+    color: white !important;
+}
+
+.priority-text-btn.active.low-btn {
+    border-color: #098765;
+}
+
+.priority-text-btn.active.medium-btn {
+    border-color: #ffd700;
+}
+
+.priority-text-btn.active.high-btn {
+    border-color: #d9534f;
+}
+
+.priority-text-btn:hover,
+.priority-text-btn:active,
+.priority-text-btn:focus,
+.priority-text-btn:hover:not(.active),
+.priority-text-btn.active:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+    box-shadow: none !important;
+    transform: none !important;
+    outline: none !important;
+}
+
+.deadline-selector {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 8px;
+    overflow: visible;
+}
+
+.modal-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 25px;
+    justify-content: center;
+}
+
+/* Порядок кнопок в модальных окнах: слева Нет, справа Да */
+.modal-buttons .btn-no {
+    order: 1;
+}
+
+.modal-buttons .btn-yes {
+    order: 2;
+}
+
+.desc-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    backdrop-filter: blur(5px);
+}
+
+.desc-modal-content {
+    width: fit-content;
+    min-width: 400px;
+    max-width: 80vw;
+    height: auto;
+    max-height: 85vh;
+    padding: 20px;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    color: white;
+    font-family: 'Nunito', monospace;
+    position: relative;
+    background-color: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+}
+
+.desc-title {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 600;
+    text-align: center;
+    word-wrap: break-word;
+}
+
+.desc-full-text {
+    flex-grow: 1;
+    overflow-y: auto;
+    max-height: 50vh;
+    background: rgba(0, 0, 0, 0.1);
+    padding: 15px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    margin-top: 1px;
+    font-size: 14px;
+    line-height: 1.5;
+    color: rgba(255, 255, 255, 0.9);
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+/* Детали задачи (как в задачах команды) */
+.task-details-container {
+    display: flex;
+    gap: 20px;
+    width: 100%;
+    align-items: flex-start;
+}
+
+.task-description-section {
+    flex: 1;
+    min-width: 0;
+}
+
+.task-info-section {
+    width: 200px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.task-description-content {
+    background: rgba(0, 0, 0, 0.2);
+    padding: 15px;
+    border-radius: 10px;
+    font-family: 'Nunito', monospace;
+    font-size: 14px;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.9);
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    max-height: 250px;
+    overflow-y: auto;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.info-block {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 12px 15px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.info-block-label {
+    font-family: 'Nunito', monospace;
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.5);
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.info-block-value {
+    font-family: 'Nunito', monospace;
+    font-size: 14px;
+    color: white;
+    font-weight: 500;
+}
+
+.priority-indicator-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.priority-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    box-shadow: 0 0 8px currentColor;
+}
+
+.priority-text {
+    font-family: 'Nunito', monospace;
+    font-size: 14px;
+    color: white;
+    font-weight: 500;
+}
+
+.task-dates-wrapper {
+    background: rgba(0, 0, 0, 0.15);
+    padding: 15px 20px;
+    border-radius: 10px;
+    display: flex;
+    gap: 30px;
+    flex-wrap: wrap;
+}
+
+.date-info {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.date-label {
+    font-family: 'Nunito', monospace;
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.date-value {
+    font-family: 'Nunito', monospace;
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.9);
+    font-weight: 500;
+}
+
+@media (max-width: 768px) {
+    .task-details-container {
+        flex-direction: column;
+    }
+
+    .task-info-section {
+        width: 100%;
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+
+    .info-block {
+        flex: 1;
+        min-width: 150px;
+    }
+
+    .task-dates-wrapper {
+        flex-direction: column;
+        gap: 12px;
+    }
+}
+
+.desc-modal-buttons {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+    flex-shrink: 0;
+    width: 100%;
+}
+
+.desc-modal-buttons .btn-cancel {
+    width: 140px;
+    justify-content: center;
+}
+
+.modal-content header {
+    margin: 0;
+    font-family: 'Nunito', monospace;
+    text-align: center;
+    font-size: 20px;
+    flex-grow: 1;
+    margin-bottom: 10px !important;
+}
+
+.details-btn {
+    width: 90px;
+    height: 25px;
+    padding: 0;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.05);
+    color: white;
+    font-family: 'Nunito', monospace;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-transform: none;
+    line-height: 23px;
+}
+
+.details-btn:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.4);
+}
+
+/* Кнопки Закрыть/Переоткрыть задачи */
+.task-action-buttons {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.close-task-btn,
+.reopen-task-btn {
+    padding: 6px 12px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.05);
+    color: white;
+    font-family: 'Nunito', monospace;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-transform: none;
+}
+
+.close-task-btn:hover,
+.reopen-task-btn:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.4);
+}
+
+.datepicker-container {
+    position: relative;
+    width: 100%;
+}
+
+.deadline-input {
+    width: 100%;
+    padding: 12px;
+    padding-right: 40px;
+    border: none;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.2);
+    color: white !important;
+    font-weight: 200;
+    font-family: 'Nunito', monospace;
+    font-size: 15px;
+    box-sizing: border-box;
+    outline: none;
+    transition: background 0.3s;
+    height: 45px;
+    cursor: pointer;
+}
+
+.deadline-input:focus {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.deadline-input::placeholder {
+    color: rgba(255, 255, 255, 0.7) !important;
+}
+
+.deadline-icon {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 24px;
+    height: 24px;
+    pointer-events: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.deadline-icon img {
+    width: 20px;
+    height: 20px;
+    filter: brightness(0) invert(1);
+    opacity: 0.7;
+}
+
+.deadline-input-trigger {
+    width: 100%;
+    padding: 0 12px;
+    height: 45px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    border: none;
+    outline: none;
+    color: white;
+    font-family: 'Nunito', monospace;
+    font-size: 14px !important;
+    font-weight: 200;
+    box-sizing: border-box;
+    cursor: text;
+    transition: background 0.2s ease;
+}
+
+.deadline-input-trigger:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+    box-shadow: none !important;
+    transform: none !important;
+    outline: none !important;
+}
+
+.deadline-input-trigger.input-error {
+    border: 1px solid #ff5252;
+    background: rgba(255, 82, 82, 0.1);
+}
+
+.placeholder-text {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.custom-calendar-popover {
+    position: absolute;
+    bottom: 60%;
+    left: 0;
+    margin-top: 8px;
+    z-index: 100;
+}
+
+.custom-datetime-picker {
+    display: flex;
+    background-color: #2d2d3a;
+    border-radius: 12px;
+    overflow: hidden;
+    font-family: 'Nunito', sans-serif;
+    color: white;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+    width: fit-content;
+    position: relative;
+}
+
+.calendar-container {
+    padding: 16px;
+    min-width: 280px;
+}
+
+.calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    position: relative;
+}
+
+.current-month-label {
+    font-weight: 600;
+    font-size: 16px;
+    text-align: center;
+    flex-grow: 1;
+}
+
+.nav-btn {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    width: 24px;
+    height: 24px;
+    position: relative;
+    padding: 0;
+}
+
+.nav-btn::before {
+    content: '';
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    width: 8px;
+    height: 8px;
+    border-top: 2px solid rgba(255, 255, 255, 0.7);
+    border-right: 2px solid rgba(255, 255, 255, 0.7);
+    transform: rotate(45deg);
+    transition: border-color 0.2s ease;
+}
+
+.nav-btn.prev::before {
+    left: auto;
+    right: 8px;
+    transform: rotate(-135deg);
+}
+
+.nav-btn:hover::before {
+    border-color: #098765;
+}
+
+.weekdays {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    margin-bottom: 8px;
+    text-align: center;
+}
+
+.weekday {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 12px;
+    font-weight: 600;
+    padding: 4px 0;
+}
+
+.days-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+}
+
+.calendar-day {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.2s ease, color 0.2s ease;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.calendar-day.empty {
+    cursor: default;
+}
+
+.calendar-day:hover:not(.empty):not(.selected) {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: white;
+}
+
+.calendar-day.today {
+    color: #098765;
+    font-weight: 600;
+}
+
+.calendar-day.selected {
+    background-color: #098765;
+    color: white;
+    font-weight: 600;
+    box-shadow: 0 0 10px rgba(9, 135, 101, 0.4);
+}
+
+.time-input-container {
+    border-left: 1px solid rgba(255, 255, 255, 0.15);
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: #2d2d3a;
+    min-width: 100px;
+}
+
+.time-input-container label {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.6);
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.time-input {
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 6px;
+    color: white;
+    font-family: 'Nunito', sans-serif;
+    font-size: 16px;
+    padding: 8px 12px;
+    text-align: center;
+    outline: none;
+    width: 100%;
+    box-sizing: border-box;
+    transition: all 0.2s ease;
+}
+
+.time-input:focus {
+    border-color: #098765;
+}
+
+.time-input::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+    cursor: pointer;
+}
+
+.time-input:hover {
+    box-shadow: inset 0 0 10px #222222;
+    border-color: #222222;
+}
+
+.tasks-panel-container {
+    position: fixed;
+    top: 80px;
+    left: 20px;
+    right: 20px;
+    bottom: 20px;
+    min-width: 500px;
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    margin-top: 35px;
+    gap: 5px;
+}
+
+.tasks-dark-header {
+    background: rgba(30, 30, 30, 0.9);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    height: 38px;
+    width: 10%;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    padding: 0 15px;
+    border-radius: 10px;
+    position: relative;
+    z-index: 100;
+    overflow: visible;
+}
+
+.filter-sort-buttons-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    position: relative;
+    z-index: 100;
+}
+
+.tasks-scroll-wrapper {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-right: 1px;
+    margin-top: 0;
+    margin-bottom: 20px;
+    border-radius: 10px;
+    box-sizing: border-box;
+}
+
+.tasks-scroll-wrapper.custom-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+}
+
+.tasks-scroll-wrapper.custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+}
+
+.tasks-scroll-wrapper.custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.tasks-scroll-wrapper.custom-scrollbar::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 3px;
+}
+
+.tasks-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 15px;
+}
+
+.common-close-btn {
+    position: absolute;
+    top: -1px;
+    right: -1px;
+    width: 40px;
+    height: 40px;
+    background: transparent !important;
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.common-close-btn img {
+    width: 18px;
+    height: 18px;
+    filter: brightness(0) invert(1);
+    opacity: 0.8;
+    transition: opacity 0.3s;
+    display: block;
+}
+
+.common-close-btn:hover {
+    transform: scale(1.1) !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    outline: none !important;
+}
+
+.common-close-btn:hover img {
+    opacity: 1;
+}
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    backdrop-filter: blur(5px);
+}
+
+.modal-content {
+    background-color: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+    border-radius: 20px;
+    width: 450px;
+    max-width: 90%;
+    display: flex;
+    flex-direction: column;
+    color: white;
+    position: relative;
+}
+
+.modal-content header {
+    margin-bottom: 20px;
+    font-family: 'Nunito', monospace;
+    text-align: center;
+    font-weight: 400;
+    width: 100%;
+}
+
+.resizable-textarea {
+    min-height: 100px !important;
+    max-height: 210px;
+    resize: vertical !important;
+    overflow-y: auto;
+    display: block;
+    position: relative;
+    border-radius: 13px;
+}
+
+.resizable-textarea::-webkit-resizer {
+    display: none;
+}
+
+.resizable-textarea::after {
+    content: '';
+    position: absolute;
+    bottom: 2px;
+    right: 2px;
+    width: 15px;
+    height: 15px;
+    background: linear-gradient(135deg, transparent 50%, rgba(255, 255, 255, 0.5) 50%);
+    cursor: nwse-resize;
+    pointer-events: none;
+    border-bottom-right-radius: 8px;
+}
+
+.btn-text {
+    position: relative;
+    z-index: 2;
+    transition: transform 0.35s ease-in, opacity 0.35s ease-in;
+    opacity: 1;
+}
+
+.btn-icon {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%) scale(0.5);
+    width: 20px;
+    height: 20px;
+    z-index: 101;
+    opacity: 0;
+    transition: all 0.35s ease-out;
+    filter: brightness(0) invert(1);
+}
+
+.btn-bg-slide {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 100;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.35s ease-out;
+}
+
+.btn-save .btn-bg-slide,
+.btn-cancel .btn-bg-slide,
+.btn-delete .btn-bg-slide {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+.btn-save:hover .btn-bg-slide,
+.btn-cancel:hover .btn-bg-slide,
+.btn-delete:hover .btn-bg-slide {
+    transform: scaleX(1);
+}
+
+.btn-save:hover .btn-text,
+.btn-cancel:hover .btn-text,
+.btn-delete:hover .btn-text {
+    transform: translateX(-150%);
+    opacity: 0;
+}
+
+.btn-save:hover .btn-icon,
+.btn-cancel:hover .btn-icon,
+.btn-delete:hover .btn-icon {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+}
